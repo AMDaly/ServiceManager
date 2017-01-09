@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:PeekServiceMonitor"
         xmlns:viewModel="clr-namespace:PeekServiceMonitor.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="750">
+        Title="MainWindow" Height="350" Width="760">
     <Window.Resources>
         <converters:EnumMatchToBooleanConverter x:Key="EnumMatchToBooleanConverter"/>
     </Window.Resources>
@@ -31,7 +31,7 @@
             </Button>
         </DockPanel>
         <Grid>
-            <ListView ItemsSource="{Binding PeekServices}">
+            <ListView ItemsSource="{Binding Services}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}"/>
@@ -53,7 +53,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Status" Width="50">
+                        <!--<GridViewColumn Header="Status" Width="50">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <ContentControl Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
@@ -81,18 +81,18 @@
                                     </ContentControl>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ServiceProp.Name}" Width="100"/>
-                        <GridViewColumn Header="Started" DisplayMemberBinding="{Binding ServiceProp.Started}" Width="150"/>
-                        <GridViewColumn Header="Stopped" DisplayMemberBinding="{Binding ServiceProp.Stopped}" Width="150"/>
-                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding ServiceProp.Status}" Width="150"/>
+                        </GridViewColumn>-->
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="100"/>
+                        <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="150"/>
+                        <GridViewColumn Header="Stopped" DisplayMemberBinding="{Binding Stopped}" Width="150"/>
+                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="150"/>
                         <GridViewColumn Header="Start" Width="45">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <ContentControl Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                         <ContentControl.Resources>
                                             <DataTemplate DataType="{x:Type viewModel:ServiceRunningViewModel}">
-                                                <Button IsEnabled="{Binding RunningState, ConverterParameter={x:Static System:ServiceControllerStatus.Stopped}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
+                                                <Button IsEnabled="{Binding Status, ConverterParameter={x:Static System:ServiceControllerStatus.Stopped}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
                                             </DataTemplate>
                                         </ContentControl.Resources>
                                     </ContentControl>
@@ -105,7 +105,7 @@
                                     <ContentControl Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                         <ContentControl.Resources>
                                             <DataTemplate DataType="{x:Type viewModel:ServiceRunningViewModel}">
-                                                <Button IsEnabled="{Binding RunningState, ConverterParameter={x:Static System:ServiceControllerStatus.Running}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
+                                                <Button IsEnabled="{Binding Status, ConverterParameter={x:Static System:ServiceControllerStatus.Running}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
                                             </DataTemplate>
                                         </ContentControl.Resources>
                                     </ContentControl>
@@ -118,7 +118,7 @@
                                     <ContentControl Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                         <ContentControl.Resources>
                                             <DataTemplate DataType="{x:Type viewModel:ServiceRunningViewModel}">
-                                                <Button IsEnabled="{Binding RunningState, ConverterParameter={x:Static System:ServiceControllerStatus.Running}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
+                                                <Button IsEnabled="{Binding Status, ConverterParameter={x:Static System:ServiceControllerStatus.Running}, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay}"/>
                                             </DataTemplate>
                                         </ContentControl.Resources>
                                     </ContentControl>

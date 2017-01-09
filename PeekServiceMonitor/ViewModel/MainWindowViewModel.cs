@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using PeekServiceMonitor.PropertyChanged;
 
 namespace PeekServiceMonitor.ViewModel
 {
-    class MainWindowViewModel
+    class MainWindowViewModel : NotifyPropertyChangedBase
     {
         private readonly ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
-
 
         public MainWindowViewModel(ICommand onInitializeCommand)
         {
@@ -28,16 +26,10 @@ namespace PeekServiceMonitor.ViewModel
 
         public void Add(ServiceRunningViewModel serviceViewModel)
         {
-            Task AddService = new Task(() =>
+            Task.Run(() =>
             {
-                var service = Services.FirstOrDefault(
-                    p => string.Equals(serviceViewModel.Name, p.Name, StringComparison.InvariantCulture));
-
-                Services.Add(service);
+                _services.Add(serviceViewModel);
             });
-
-            AddService.Start();
-            AddService.Wait();
         }
     }
 }

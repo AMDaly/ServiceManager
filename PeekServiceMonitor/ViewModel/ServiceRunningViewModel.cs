@@ -1,29 +1,34 @@
 ﻿using System;
 using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
+using log4net;
+using log4net.Config;
 
 namespace PeekServiceMonitor.ViewModel
 {
     class ServiceRunningViewModel : NotifyPropertyChangedBase, IServiceRunningViewModel
     {
+        private readonly ILog logger;
         private ServiceController svc;
         private readonly ServiceControllerStatus _originalServiceState;
         private ServiceControllerStatus _serviceState;
 
         public ServiceRunningViewModel(String svcName)
         {
+            logger = LogManager.GetLogger(typeof(ServiceRunningViewModel));
+            
             try
             {
                 svc = new ServiceController(svcName);
-                var status = svc.Status;
+                _originalServiceState = svc.Status;
             }
-            catch
+            catch (Exception ex)
             {
-                //log
+                logger.Warn(ex.StackTrace);
             }
         }
         
-        public String Name
+        public string Name
         {
             get { return svc.DisplayName; }
         }
@@ -38,6 +43,16 @@ namespace PeekServiceMonitor.ViewModel
                     OnPropertyChanged("ChangesPending");
                 }
             }
+        }
+
+        public string Started
+        {
+            get { return "0"; }
+        }
+
+        public string Stopped
+        {
+            get { return "1"; }
         }
 
         public bool ChangesPending
