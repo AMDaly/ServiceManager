@@ -8,15 +8,15 @@
         xmlns:local="clr-namespace:PeekServiceMonitor"
         xmlns:viewModel="clr-namespace:PeekServiceMonitor.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="760">
+        Title="MainWindow" Height="350" Width="775">
     <Window.Resources>
         <converters:EnumMatchToBooleanConverter x:Key="EnumMatchToBooleanConverter"/>
     </Window.Resources>
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" Visibility="Visible">
-            <Button DockPanel.Dock="Left" Command="{Binding StartAllServices}" CommandParameter="{Binding}">Start All Services</Button>
-            <Button DockPanel.Dock="Left" Command="{Binding RestartAllServices}" CommandParameter="{Binding}">Restart All Services</Button>
-            <Button DockPanel.Dock="Left" Command="{Binding StopAllServices}" CommandParameter="{Binding}">Stop All Services</Button>
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StartAllServices}" CommandParameter="{Binding}">Start All</Button>
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding RestartAllServices}" CommandParameter="{Binding}">Restart All</Button>
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StopAllServices}" CommandParameter="{Binding}">Stop All</Button>
             <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding ToggleSettingVisibility}">
                 <StackPanel>
                     <Image Source="./Resources/Settings.png" Width="50" Height="50"/>
@@ -84,7 +84,7 @@
                         </GridViewColumn>-->
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="100"/>
                         <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="150"/>
-                        <GridViewColumn Header="Stopped" DisplayMemberBinding="{Binding Stopped}" Width="150"/>
+                        <GridViewColumn Header="Uptime" DisplayMemberBinding="{Binding Uptime}" Width="150"/>
                         <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="150"/>
                         <GridViewColumn Header="Start" Width="45">
                             <GridViewColumn.CellTemplate>

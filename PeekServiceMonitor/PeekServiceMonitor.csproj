@@ -61,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -80,6 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\ProcessExtensions.cs" />
     <Compile Include="Commands\ServiceScan.cs" />
     <Compile Include="Commands\WpfCommandBase.cs" />
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />

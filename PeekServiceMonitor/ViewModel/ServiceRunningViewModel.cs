@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
 using log4net;
-using log4net.Config;
+using PeekServiceMonitor.Commands;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -12,19 +13,35 @@ namespace PeekServiceMonitor.ViewModel
         private ServiceController svc;
         private readonly ServiceControllerStatus _originalServiceState;
         private ServiceControllerStatus _serviceState;
+        private Process process;
+        private int id;
+        private string startTime;
+        private string uptime;
 
         public ServiceRunningViewModel(String svcName)
         {
             logger = LogManager.GetLogger(typeof(ServiceRunningViewModel));
-            
+            ProcessExtensions processExtensions = new ProcessExtensions();
+
             try
             {
                 svc = new ServiceController(svcName);
                 _originalServiceState = svc.Status;
+                id = processExtensions.GetProcessId(svc);
+                startTime = processExtensions.GetStartTime(id);
+
+                if (svc.Status == ServiceControllerStatus.Running)
+                {
+                    uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(startTime)));
+                }
+                else
+                {
+                    uptime = "N/A";
+                }
             }
             catch (Exception ex)
             {
-                logger.Warn(ex.StackTrace);
+                logger.Warn(ex);
             }
         }
         
@@ -47,12 +64,12 @@ namespace PeekServiceMonitor.ViewModel
 
         public string Started
         {
-            get { return "0"; }
+            get { return startTime; }
         }
 
-        public string Stopped
+        public string Uptime
         {
-            get { return "1"; }
+            get { return uptime; }
         }
 
         public bool ChangesPending
