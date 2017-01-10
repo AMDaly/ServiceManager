@@ -87,6 +87,7 @@
     <Compile Include="ViewModel\IServiceRunningViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ServiceRunningViewModel.cs" />
+    <Compile Include="Wpf\ApplicationThreadHelper.cs" />
     <Compile Include="Wpf\WpfHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using PeekServiceMonitor.PropertyChanged;
+using PeekServiceMonitor.Wpf;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -26,7 +27,7 @@ namespace PeekServiceMonitor.ViewModel
 
         public void Add(ServiceRunningViewModel serviceViewModel)
         {
-            Task.Run(() =>
+            ApplicationThreadHelper.Invoke(() =>
             {
                 _services.Add(serviceViewModel);
             });
