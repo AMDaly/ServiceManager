@@ -82,7 +82,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\ProcessExtensions.cs" />
+    <Compile Include="Commands\ServiceCommands.cs" />
     <Compile Include="Commands\ServiceScan.cs" />
+    <Compile Include="Commands\StopServiceCommand.cs" />
     <Compile Include="Commands\WpfCommandBase.cs" />
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="PropertyChanged\NotifyPropertyChangedBase.cs" />
@@ -132,8 +134,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Resource Include="Resources\GreenLight.png" />
+    <Resource Include="Resources\Log.png" />
+    <Resource Include="Resources\PlayDisabled.png" />
+    <Resource Include="Resources\PlayHot.png" />
+    <Resource Include="Resources\RedLight.png" />
+    <Resource Include="Resources\RestartDisabled.png" />
+    <Resource Include="Resources\RestartHot.png" />
+    <Resource Include="Resources\Settings.png" />
+    <Resource Include="Resources\StopDisabled.png" />
+    <Resource Include="Resources\StopHot.png" />
+    <Resource Include="Resources\YellowLight.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
