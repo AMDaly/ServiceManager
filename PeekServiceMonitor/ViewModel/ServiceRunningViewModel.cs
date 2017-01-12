@@ -4,10 +4,11 @@ using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
 using log4net;
 using PeekServiceMonitor.Commands;
+using System.ComponentModel;
 
 namespace PeekServiceMonitor.ViewModel
 {
-    class ServiceRunningViewModel : NotifyPropertyChangedBase, IServiceRunningViewModel
+    public class ServiceRunningViewModel : NotifyPropertyChangedBase, IServiceRunningViewModel
     {
         private readonly ILog logger;
         private ServiceController svc;
@@ -17,6 +18,7 @@ namespace PeekServiceMonitor.ViewModel
         private int id;
         private string startTime;
         private string uptime;
+        private bool _selected;
 
         public ServiceRunningViewModel(String svcName)
         {
@@ -71,10 +73,16 @@ namespace PeekServiceMonitor.ViewModel
         {
             get { return uptime; }
         }
-
+        
         public bool ChangesPending
         {
             get { return _serviceState != _originalServiceState; }
+        }
+
+        public bool Selected
+        {
+            get { return _selected; }
+            set { SetField(ref _selected, value); }
         }
     }
 }

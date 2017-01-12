@@ -11,6 +11,7 @@ namespace PeekServiceMonitor.ViewModel
     class MainWindowViewModel : NotifyPropertyChangedBase
     {
         private readonly ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
+        private IServiceRunningViewModel _selectedService;
 
         public MainWindowViewModel(ICommand onInitializeCommand)
         {
@@ -31,6 +32,12 @@ namespace PeekServiceMonitor.ViewModel
             {
                 _services.Add(serviceViewModel);
             });
+        }
+
+        public IServiceRunningViewModel SelectedService
+        {
+            get { return _selectedService; }
+            set { SetField(ref _selectedService, value); }
         }
     }
 }
