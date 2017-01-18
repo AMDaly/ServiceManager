@@ -18,5 +18,10 @@ namespace PeekServiceMonitor.ViewModel
         {
             get; set;
         }
+
+        ServiceController Service
+        {
+            get;
+        }
     }
 }

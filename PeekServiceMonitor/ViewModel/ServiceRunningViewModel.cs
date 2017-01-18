@@ -4,6 +4,7 @@ using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
 using log4net;
 using PeekServiceMonitor.Commands;
+using PeekServiceMonitor.Wpf;
 using System.ComponentModel;
 
 namespace PeekServiceMonitor.ViewModel
@@ -64,6 +65,11 @@ namespace PeekServiceMonitor.ViewModel
             }
         }
 
+        public ServiceController Service
+        {
+            get { return svc; }
+        }
+
         public string Started
         {
             get { return startTime; }
@@ -83,6 +89,45 @@ namespace PeekServiceMonitor.ViewModel
         {
             get { return _selected; }
             set { SetField(ref _selected, value); }
+        }
+
+        public void StartService(ServiceController svc)
+        {
+            ApplicationThreadHelper.Invoke(() =>
+            {
+                StartServiceCommand cmd = new StartServiceCommand(svc);
+
+                if (cmd.CanExecute(null))
+                {
+                    cmd.Execute(null);
+                }
+            });
+        }
+
+        public void StopService(ServiceController svc)
+        {
+            ApplicationThreadHelper.Invoke(() =>
+            {
+                StopServiceCommand cmd = new StopServiceCommand(svc);
+
+                if (cmd.CanExecute(null))
+                {
+                    cmd.Execute(null);
+                }
+            });
+        }
+
+        public void RestartService(ServiceController svc)
+        {
+            ApplicationThreadHelper.Invoke(() =>
+            {
+                RestartServiceCommand cmd = new RestartServiceCommand(svc);
+
+                if (cmd.CanExecute(null))
+                {
+                    cmd.Execute(null);
+                }
+            });
         }
     }
 }
