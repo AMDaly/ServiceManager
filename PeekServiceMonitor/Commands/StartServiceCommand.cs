@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using PeekServiceMonitor.ViewModel;
 
 namespace PeekServiceMonitor.Commands
 {
-    public class StopServiceCommand : ICommand
+    public class StartServiceCommand : ICommand
     {
         private ServiceController svc;
 
-        public StopServiceCommand(ServiceController svc)
+        public StartServiceCommand(ServiceController svc)
         {
             this.svc = svc;
         }
@@ -29,7 +24,7 @@ namespace PeekServiceMonitor.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (svc.Status == ServiceControllerStatus.Running && svc.CanStop)
+            if (svc.Status == ServiceControllerStatus.Stopped)
             {
                 return true;
             }
@@ -41,11 +36,11 @@ namespace PeekServiceMonitor.Commands
 
         public void Execute(object parameter)
         {
-            svc.Stop();
+            svc.Start();
 
             try
             {
-                svc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(15));
+                svc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
             }
             catch (System.ServiceProcess.TimeoutException ex)
             {
