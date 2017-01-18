@@ -23,7 +23,7 @@
             </Menu>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top" DataContext="{Binding SelectedService}">
-            <Button ToolTip="{Binding Status}">
+            <Button ToolTip="Start the selected service." Name="StartButton" Click="StartButton_Click">
                 <Image  Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -38,8 +38,8 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                </Button>
-                <Button>
+            </Button>
+            <Button ToolTip="Stop the selected service." Name="StopSelectedButton" Click="StopSelectedButton_Click">
                 <Image Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -54,8 +54,8 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                </Button>
-            <Button HorizontalAlignment="Left">
+            </Button>
+            <Button ToolTip="Restart the selected service." Name="RestartSelectedButton" Click="RestartSelectedButton_Click" HorizontalAlignment="Left">
                 <Image Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
