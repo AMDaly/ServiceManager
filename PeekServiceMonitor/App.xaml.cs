@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PeekServiceMonitor.ViewModel;
+using System.Threading;
 
 namespace PeekServiceMonitor
 {
@@ -16,6 +17,7 @@ namespace PeekServiceMonitor
     public partial class App : Application
     {
         private readonly ILog logger;
+        private MainWindowViewModel viewModel;
         List<String> initialSvcList = new List<String>();
 
         public App()
@@ -30,9 +32,17 @@ namespace PeekServiceMonitor
         {
             logger.Info("Application_Startup");
 
-            var viewModel = new MainWindowViewModel(new ServiceScan());            
+            viewModel = new MainWindowViewModel(new ServiceScan());
             MainWindow = new MainWindow { DataContext = viewModel };
             MainWindow.Show();
+        }
+
+        private void OnMainWindowClosing()
+        {
+            Task.Run(() =>
+            {
+                viewModel.timer.Stop();
+            }).Wait();
         }
     }
 }

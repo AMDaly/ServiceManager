@@ -12,8 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Timers;
 using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.ViewModel;
+using System.Threading;
+using System.ServiceProcess;
 
 namespace PeekServiceMonitor
 {
@@ -22,33 +25,11 @@ namespace PeekServiceMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();    
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            var svc = ((MainWindowViewModel)DataContext).SelectedService;
-            var model = new ServiceRunningViewModel(svc.Name);
-
-            model.StartService(svc.Service);
-        }
-
-        private void StopSelectedButton_Click(object sender, RoutedEventArgs e)
-        {
-            var svc = ((MainWindowViewModel)DataContext).SelectedService;
-            var model = new ServiceRunningViewModel(svc.Name);
-
-            model.StopService(svc.Service);
-        }
-
-        private void RestartSelectedButton_Click(object sender, RoutedEventArgs e)
-        {
-            var svc = ((MainWindowViewModel)DataContext).SelectedService;
-            var model = new ServiceRunningViewModel(svc.Name);
-
-            model.RestartService(svc.Service);
-        }
     }
 }

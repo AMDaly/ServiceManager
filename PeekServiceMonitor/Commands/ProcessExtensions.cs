@@ -27,9 +27,7 @@ namespace PeekServiceMonitor.Commands
             object o = service.GetPropertyValue("ProcessId");
             int processId = (int)((UInt32)o);
             Process process = Process.GetProcessById(processId);
-
-            logger.Info(string.Format("Service: {0}, Process ID: {1}", svc.ServiceName, processId));
-
+            
             return process;
         }
 
@@ -44,9 +42,7 @@ namespace PeekServiceMonitor.Commands
             object o = service.GetPropertyValue("ProcessId");
             int processId = (int)((UInt32)o);
             Process process = Process.GetProcessById(processId);
-
-            logger.Info(string.Format("Service: {0}, Process ID: {1}", svc.ServiceName, processId));
-
+            
             return processId;
         }
 
@@ -83,12 +79,6 @@ namespace PeekServiceMonitor.Commands
             foreach (ManagementObject mo in processes)
             {
                 PropertyDataCollection properties = mo.Properties;
-
-                logger.Info("Win32_Process Property Names: ");
-                foreach (PropertyData property in properties)
-                {
-                    logger.Info(string.Format("{0} = {1}", property.Name, property.Value));
-                }
             }
         }
 
@@ -105,12 +95,6 @@ namespace PeekServiceMonitor.Commands
             foreach (ManagementObject mo in processes)
             {
                 PropertyDataCollection properties = mo.Properties;
-
-                logger.Info("Win32_Process Property Names: ");
-                foreach (PropertyData property in properties)
-                {
-                    logger.Info(string.Format("{0} = {1}", property.Name, property.Value));
-                }
             }
         }
 
@@ -130,7 +114,6 @@ namespace PeekServiceMonitor.Commands
                 {
                     if (null != property.Value)
                     {
-                        logger.Info(string.Format("{0} = {1}", property.Name, property.Value));
                         return ManagementDateTimeConverter.ToDateTime(property.Value.ToString()).ToString();
                     }
                 }

@@ -23,7 +23,7 @@
             </Menu>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top" DataContext="{Binding SelectedService}">
-            <Button ToolTip="Start the selected service." Name="StartButton" Click="StartButton_Click">
+            <Button ToolTip="Start the selected service." Name="StartButton" Command="{Binding StartServiceCommand}">
                 <Image  Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -39,7 +39,7 @@
                     </Image.Style>
                 </Image>
             </Button>
-            <Button ToolTip="Stop the selected service." Name="StopSelectedButton" Click="StopSelectedButton_Click">
+            <Button ToolTip="Stop the selected service." Name="StopSelectedButton" Command="{Binding StopServiceCommand}">
                 <Image Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -55,7 +55,7 @@
                     </Image.Style>
                 </Image>
             </Button>
-            <Button ToolTip="Restart the selected service." Name="RestartSelectedButton" Click="RestartSelectedButton_Click" HorizontalAlignment="Left">
+            <Button ToolTip="Restart the selected service." Name="RestartSelectedButton" Command="{Binding RestartServiceCommand}" HorizontalAlignment="Left">
                 <Image Width="16" Height="16" Margin="3,0">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -73,16 +73,16 @@
             </Button>
         </DockPanel>
         <DockPanel DockPanel.Dock="Bottom" Visibility="Visible">
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StartAllServices}" CommandParameter="{Binding}">Start All</Button>
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding RestartAllServices}" CommandParameter="{Binding}">Restart All</Button>
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StopAllServices}" CommandParameter="{Binding}">Stop All</Button>
-            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding ToggleSettingVisibility}">
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StartAllServicesCommand}">Start All</Button>
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StopAllServicesCommand}">Stop All</Button>
+            <Button DockPanel.Dock="Left" Width="75" Command="{Binding RestartAllServicesCommand}">Restart All</Button>
+            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding ToggleSettingVisibilityCommand}">
                 <StackPanel>
                     <Image Source="pack://application:,,,/Resources/Settings.png" Width="50" Height="50"/>
                     <TextBlock>Settings</TextBlock>
                 </StackPanel>
             </Button>
-            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenServiceLog}">
+            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenServiceLogCommand}">
                 <StackPanel>
                     <Image Source="pack://application:,,,/Resources/Log.png" Width="50" Height="50"/>
                     <TextBlock>Service Log</TextBlock>
@@ -96,10 +96,10 @@
                         <Setter Property="IsSelected" Value="{Binding Selected}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
-                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Background" Value="LightGreen"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
-                                <Setter Property="Background" Value="Gray"/>
+                                <Setter Property="Background" Value="LightPink"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.StartPending}">
                                 <Setter Property="Background" Value="LightGreen"/>
@@ -141,7 +141,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>-->
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="100"/>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
                         <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="150"/>
                         <GridViewColumn Header="Uptime" DisplayMemberBinding="{Binding Uptime}" Width="150"/>
                         <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="150"/>
