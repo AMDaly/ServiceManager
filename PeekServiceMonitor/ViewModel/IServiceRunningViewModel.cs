@@ -19,9 +19,21 @@ namespace PeekServiceMonitor.ViewModel
             get; set;
         }
 
+        String Started
+        {
+            get; set;
+        }
+
+        String Uptime
+        {
+            get; set;
+        }
+
         ServiceController Service
         {
             get;
         }
+
+        void UpdateState();
     }
 }

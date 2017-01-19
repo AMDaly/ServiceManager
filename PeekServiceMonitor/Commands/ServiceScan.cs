@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using PeekServiceMonitor.ViewModel;
 using log4net;
 using System.Windows.Input;
+using System.ServiceProcess;
+using System.Text.RegularExpressions;
 
 namespace PeekServiceMonitor.Commands
 {
     class ServiceScan : WpfCommandBase<MainWindowViewModel>
     {
-        List<String> initialSvcList = new List<String>();
+        private List<ServiceController> peekSvcList = new List<ServiceController>();
         private readonly ILog logger;
 
         public ServiceScan()
@@ -21,29 +23,31 @@ namespace PeekServiceMonitor.Commands
 
         protected override void ExecuteInternal(MainWindowViewModel parameter)
         {
+            List<ServiceController> allSvcList = ServiceController.GetServices().ToList();
 
-            logger.Info("Inside ExecuteServiceScan");
-
-            initialSvcList.Add("PeekStateMachineService_V1.7.1");
-            initialSvcList.Add("PeekSchedulerService_V1.7.1");
-
+            peekSvcList = allSvcList
+                .Where(p => Regex.IsMatch(p.ServiceName, "peek", RegexOptions.IgnoreCase)
+                            || Regex.IsMatch(p.ServiceName, "spinnaker", RegexOptions.IgnoreCase)
+                            || Regex.IsMatch(p.ServiceName, "semex", RegexOptions.IgnoreCase)).ToList();
+            
             Task.Run(() =>
             {
-                foreach (var svc in initialSvcList)
+                foreach (var svc in peekSvcList)
                 {
+                    var svcName = svc.ServiceName;
                     try
                     {
-                        logger.Info("Adding Service..");
-                        parameter.Add(new ServiceRunningViewModel(svc));
-                        logger.Info("Service added.");
+                        logger.Info($"Adding Service {svcName}");
+                        parameter.Add(new ServiceRunningViewModel(svc.ServiceName));
+                        logger.Info($"Service {svcName} added.");
                     }
                     catch (Exception ex)
                     {
-                        logger.Warn(string.Format("Failed to add Service: {0}.", svc), ex);
+                        logger.Warn(string.Format($"Failed to add Service: {svcName}."), ex);
                         logger.Warn(ex.InnerException);
                     }
                 }
-            }).Wait();
+            });
         }
     }
 }

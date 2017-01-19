@@ -5,14 +5,15 @@ using PeekServiceMonitor.PropertyChanged;
 using log4net;
 using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.Wpf;
-using System.ComponentModel;
+using System.Windows.Input;
+using System.Threading;
 
 namespace PeekServiceMonitor.ViewModel
 {
     public class ServiceRunningViewModel : NotifyPropertyChangedBase, IServiceRunningViewModel
     {
         private readonly ILog logger;
-        private ServiceController svc;
+        private readonly ServiceController svc;
         private readonly ServiceControllerStatus _originalServiceState;
         private ServiceControllerStatus _serviceState;
         private Process process;
@@ -21,15 +22,22 @@ namespace PeekServiceMonitor.ViewModel
         private string uptime;
         private bool _selected;
 
+        private ProcessExtensions processExtensions = new ProcessExtensions();
+
         public ServiceRunningViewModel(String svcName)
         {
             logger = LogManager.GetLogger(typeof(ServiceRunningViewModel));
             ProcessExtensions processExtensions = new ProcessExtensions();
-
+            
             try
             {
                 svc = new ServiceController(svcName);
-                _originalServiceState = svc.Status;
+
+                StartServiceCommand = new RelayCommand(o => StartService(svc), p => Status == ServiceControllerStatus.Stopped);
+                StopServiceCommand = new RelayCommand(o => StopService(svc), p => Status == ServiceControllerStatus.Running);
+                RestartServiceCommand = new RelayCommand(o => RestartService(svc), p => Status == ServiceControllerStatus.Running);
+
+                _serviceState = svc.Status;
                 id = processExtensions.GetProcessId(svc);
                 startTime = processExtensions.GetStartTime(id);
 
@@ -55,14 +63,8 @@ namespace PeekServiceMonitor.ViewModel
 
         public ServiceControllerStatus Status
         {
-            get { return svc.Status; }
-            set
-            {
-                if (SetField(ref _serviceState, value))
-                {
-                    OnPropertyChanged("ChangesPending");
-                }
-            }
+            get { return _serviceState; }
+            set { SetField(ref _serviceState, value); }
         }
 
         public ServiceController Service
@@ -73,11 +75,13 @@ namespace PeekServiceMonitor.ViewModel
         public string Started
         {
             get { return startTime; }
+            set { SetField(ref startTime, value); }
         }
 
         public string Uptime
         {
             get { return uptime; }
+            set { SetField(ref uptime, value); }
         }
         
         public bool ChangesPending
@@ -91,43 +95,73 @@ namespace PeekServiceMonitor.ViewModel
             set { SetField(ref _selected, value); }
         }
 
+        public ICommand StartServiceCommand { get; private set; }
+        public ICommand StopServiceCommand { get; private set; }
+        public ICommand RestartServiceCommand { get; private set; }
+
         public void StartService(ServiceController svc)
         {
-            ApplicationThreadHelper.Invoke(() =>
+            logger.Info($"Starting service {svc.ServiceName}. Current status is {svc.Status}.");
+            
+            var waitUntil = DateTime.UtcNow.AddSeconds(15);
+            while (svc.Status != ServiceControllerStatus.Running && svc.Status != ServiceControllerStatus.StartPending && DateTime.UtcNow < waitUntil)
             {
-                StartServiceCommand cmd = new StartServiceCommand(svc);
+                svc.Start();
+                svc.Refresh();
+                Status = svc.Status;
+                logger.Info($"Stopping service {svc.DisplayName}. Current status: {Status}");
+                Thread.CurrentThread.Join(100);
+            }
 
-                if (cmd.CanExecute(null))
-                {
-                    cmd.Execute(null);
-                }
-            });
+            svc.Refresh();
+            logger.Info($"{svc.DisplayName} current status: {svc.Status}");
         }
 
         public void StopService(ServiceController svc)
         {
-            ApplicationThreadHelper.Invoke(() =>
-            {
-                StopServiceCommand cmd = new StopServiceCommand(svc);
+            svc.Refresh();
+            logger.Info($"Stopping service {svc.ServiceName}. Current status: {svc.Status}.");
 
-                if (cmd.CanExecute(null))
+            var waitUntil = DateTime.UtcNow.AddSeconds(15);
+            while (svc.Status != ServiceControllerStatus.Stopped && DateTime.UtcNow < waitUntil)
+            {
+                if (svc.Status == ServiceControllerStatus.Running)
                 {
-                    cmd.Execute(null);
+                    logger.Info($"Service {svc.DisplayName} is Running.");
+                    svc.Stop();
+                    svc.WaitForStatus(ServiceControllerStatus.StopPending);
                 }
-            });
+
+                svc.Refresh();
+                Status = svc.Status;
+                logger.Info($"Stopping service {svc.DisplayName}. Current status: {Status}");
+                Thread.CurrentThread.Join(100);
+            }
+
+            logger.Info($"{svc.DisplayName} current status: {svc.Status}");
         }
 
         public void RestartService(ServiceController svc)
         {
-            ApplicationThreadHelper.Invoke(() =>
-            {
-                RestartServiceCommand cmd = new RestartServiceCommand(svc);
+            StopService(svc);
+            StartService(svc);
+        }
 
-                if (cmd.CanExecute(null))
-                {
-                    cmd.Execute(null);
-                }
-            });
+        public void UpdateState()
+        {
+            svc.Refresh();
+            Status = svc.Status;
+
+            if (svc.Status == ServiceControllerStatus.Running)
+            {
+                var id = processExtensions.GetProcessId(svc);
+                Started = processExtensions.GetStartTime(id);
+                Uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(Started)));
+            }
+            else
+            {
+                Uptime = "N/A";
+            }
         }
     }
 }
