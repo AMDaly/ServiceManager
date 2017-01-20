@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 using PeekServiceMonitor.PropertyChanged;
 using PeekServiceMonitor.Wpf;
 using PeekServiceMonitor.Commands;
+using PeekServiceMonitor.View;
 using System.ServiceProcess;
 using System.Timers;
 using System.Linq;
 using System.IO;
 using log4net;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Diagnostics.Eventing.Reader;
+using System.Windows;
+using PeekServiceMonitor.Util;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -114,17 +121,12 @@ namespace PeekServiceMonitor.ViewModel
 
         public void OpenServiceLog()
         {
-            string peekDataPath = Environment.ExpandEnvironmentVariables("%PEEKDATAFOLDER%");
-            string logPath = $"{peekDataPath}\\Log\\PeekServiceManager.log";
+            LogEntryBuilder builder = new LogEntryBuilder();
 
-            try
-            {
-                File.Open(logPath, FileMode.Open);
-            }
-            catch (FileNotFoundException ex)
-            {
-                logger.Warn("Cannot open log file.", ex);
-            }
+            builder.CaptureEvents();
+
+            LogView logView = new LogView();
+            logView.Show();
         }
 
         public IServiceRunningViewModel SelectedService

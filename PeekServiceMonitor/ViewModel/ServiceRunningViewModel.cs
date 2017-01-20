@@ -16,7 +16,6 @@ namespace PeekServiceMonitor.ViewModel
         private readonly ServiceController svc;
         private readonly ServiceControllerStatus _originalServiceState;
         private ServiceControllerStatus _serviceState;
-        private Process process;
         private int id;
         private string startTime;
         private string uptime;
