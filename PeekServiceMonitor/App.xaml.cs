@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PeekServiceMonitor.ViewModel;
 using System.Threading;
+using PeekServiceMonitor.Properties;
 
 namespace PeekServiceMonitor
 {
@@ -33,6 +34,15 @@ namespace PeekServiceMonitor
             logger.Info("Application_Startup");
 
             viewModel = new MainWindowViewModel(new ServiceScan());
+            
+            if (Settings.Default.AddedServices != null && Settings.Default.AddedServices.Count > 0)
+            {
+                foreach (var svc in Settings.Default.AddedServices)
+                {
+                    viewModel.Add(new ServiceRunningViewModel(svc));
+                }
+            }
+
             MainWindow = new MainWindow { DataContext = viewModel };
             MainWindow.Show();
         }

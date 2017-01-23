@@ -4,6 +4,8 @@ using System.ServiceProcess;
 using System.Management;
 using log4net;
 using System.Data;
+using System.Windows;
+using System.Linq;
 
 namespace PeekServiceMonitor.Commands
 {
@@ -120,6 +122,13 @@ namespace PeekServiceMonitor.Commands
             }
             
             return "N/A";
+        }
+
+        public bool IsWindowOpen<T>(string name = "") where T : Window
+        {
+            return string.IsNullOrEmpty(name)
+               ? Application.Current.Windows.OfType<T>().Any()
+               : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿<Window x:Class="PeekServiceMonitor.View.EditServicesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PeekServiceMonitor.View"
+        mc:Ignorable="d"
+        Title="EditServicesView" Height="315" Width="315">
+    <DockPanel DockPanel.Dock="Top">
+        <Grid DockPanel.Dock="Top" Height="250">
+            <ListView>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="TextBlock.IsEnabled" Value="{Binding IsAdded}"/>
+                        <Style.Triggers>
+                            <DataTrigger>
+
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Service Name" Width="240"  DisplayMemberBinding="{Binding IsAdded}"/>
+                        <GridViewColumn Header="Remove">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding RemoveService}">
+                                        <StackPanel>
+                                            <Image Source="pack://application:,,,/Resources/remove.png"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <StackPanel StackPanel.Orientation="Horizontal" DockPanel.Dock="Bottom">
+            <TextBox Name="ServiceNameInput" Height="30" Width="200" DockPanel.Dock="Left"></TextBox>
+            <Button DockPanel.Dock="Right" Command="{Binding AddService}">Add</Button>
+            <Button DockPanel.Dock="Right">Close</Button>
+        </StackPanel>
+    </DockPanel>
+</Window>

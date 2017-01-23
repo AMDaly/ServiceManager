@@ -57,7 +57,6 @@ namespace PeekServiceMonitor.Util
         public CollapsibleLogEntry CreateLogEntry(EventRecord record, int index)
         {
             string desc = record.FormatDescription();
-            Debug.WriteLine(desc);
             string name = desc.Substring(0, 80) + "...";
             
             return new CollapsibleLogEntry

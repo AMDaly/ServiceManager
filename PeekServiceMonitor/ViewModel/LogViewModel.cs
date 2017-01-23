@@ -12,7 +12,7 @@ namespace PeekServiceMonitor.ViewModel
 {
     public class LogViewModel : PropertyChangedBase
     {
-        private static ObservableCollection<CollapsibleLogEntry> LogEntries { get; set; }
+        
         public static ObservableCollection<CollapsibleLogEntry> _logEntries = new ObservableCollection<CollapsibleLogEntry>();
 
         public LogViewModel()
@@ -20,30 +20,10 @@ namespace PeekServiceMonitor.ViewModel
             
         }
 
-        public void AddEntry(CollapsibleLogEntry entry/*int index, DateTime dateTime, string message*/)
+        private ObservableCollection<CollapsibleLogEntry> LogEntries { get; set; }
+          
+        public void AddEntry(CollapsibleLogEntry entry)
         {
-/*
-            CollapsibleLogEntry entry = new CollapsibleLogEntry
-            {
-                Index = index,
-                DateTime = DateTime.UtcNow,
-                Message = message,
-                Contents = new List<LogEntry> {
-                                new LogEntry
-                                {
-                                    Index = index,
-                                    DateTime = DateTime.UtcNow,
-                                    Message = message
-                                },
-                                new LogEntry
-                                {
-                                    Index = index,
-                                    DateTime = DateTime.UtcNow,
-                                    Message = message
-                                }
-                            }
-            };
-*/
             _logEntries.Add(entry);
         }
     }

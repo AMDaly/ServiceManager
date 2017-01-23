@@ -27,6 +27,9 @@ namespace PeekServiceMonitor.ViewModel
         private ProcessExtensions processExtensions = new ProcessExtensions();
         public System.Timers.Timer timer = new System.Timers.Timer();
         private readonly ILog logger;
+        private LogView logView = new LogView();
+        private EditServicesView editServicesView = new EditServicesView();
+        private LogEntryBuilder builder = new LogEntryBuilder();
 
         public MainWindowViewModel(ICommand onInitializeCommand)
         {
@@ -40,7 +43,7 @@ namespace PeekServiceMonitor.ViewModel
             StartAllServicesCommand = new RelayCommand(o => StartAllServices(), p => _services.Count > 0);
             StopAllServicesCommand = new RelayCommand(o => StopAllServices(), p => _services.Count > 0);
             RestartAllServicesCommand = new RelayCommand(o => RestartAllServices(), p => _services.Count > 0);
-            ToggleSettingsVisibilityCommand = new RelayCommand(o => ToggleSettingsVisibility(), p => _services.Count > 0);
+            OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => _services.Count > 0);
             OpenServiceLogCommand = new RelayCommand(o => OpenServiceLog(), p => _services.Count > 0);
 
             timer.Interval = 100;
@@ -51,7 +54,7 @@ namespace PeekServiceMonitor.ViewModel
         public ICommand StartAllServicesCommand { get; private set; }
         public ICommand StopAllServicesCommand { get; private set; }
         public ICommand RestartAllServicesCommand { get; private set; }
-        public ICommand ToggleSettingsVisibilityCommand { get; private set; }
+        public ICommand OpenEditServicesCommand { get; private set; }
         public ICommand OpenServiceLogCommand { get; private set; }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -114,19 +117,29 @@ namespace PeekServiceMonitor.ViewModel
             }
         }
 
-        public void ToggleSettingsVisibility()
+        public void OpenEditServices()
         {
-
+            if (!editServicesView.IsVisible)
+            {
+                editServicesView.Show();
+            }
+            else
+            {
+                editServicesView.Activate();
+            }
         }
 
         public void OpenServiceLog()
         {
-            LogEntryBuilder builder = new LogEntryBuilder();
-
-            builder.CaptureEvents();
-
-            LogView logView = new LogView();
-            logView.Show();
+            if (!logView.IsVisible)
+            {
+                builder.CaptureEvents();
+                logView.Show();
+            }
+            else
+            {
+                logView.Activate();
+            }
         }
 
         public IServiceRunningViewModel SelectedService
