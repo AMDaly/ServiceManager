@@ -40,12 +40,27 @@ namespace PeekServiceMonitor.Commands
                 return 0;    // stopped, so no process ID!
             }
 
-            ManagementObject service = new ManagementObject(@"Win32_service.Name='" + svc.ServiceName + "'");
-            object o = service.GetPropertyValue("ProcessId");
-            int processId = (int)((UInt32)o);
-            Process process = Process.GetProcessById(processId);
             
-            return processId;
+
+            Process process = null;
+            while (process == null)
+            {
+                ManagementObject service = new ManagementObject(@"Win32_service.Name='" + svc.ServiceName + "'");
+                object o = service.GetPropertyValue("ProcessId");
+                int processId = (int)((UInt32)o);
+
+                try
+                {
+                    process = Process.GetProcessById(processId);
+                    return processId;
+                }
+                catch (ArgumentException ex)
+                {
+                    logger.Debug($"{ex}");
+                }
+            }
+
+            return 0;
         }
 
         public string GetStartTime(int processId)
