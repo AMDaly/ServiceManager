@@ -4,30 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PeekServiceMonitor.View"
+        xmlns:viewModel="clr-namespace:PeekServiceMonitor.ViewModel"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:EditServicesViewModel, IsDesignTimeCreatable=False}"
+        
         Title="EditServicesView" Height="315" Width="315">
     <DockPanel DockPanel.Dock="Top">
         <Grid DockPanel.Dock="Top" Height="250">
-            <ListView>
-                <ListView.ItemContainerStyle>
+            <ListView ItemsSource="{Binding AddedServices}">
+                <!--<ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="TextBlock.IsEnabled" Value="{Binding IsAdded}"/>
+                        <Setter Property="TextBlock.IsEnabled" Value="{Binding Name}"/>
                         <Style.Triggers>
                             <DataTrigger>
 
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ListView.ItemContainerStyle>
+                </ListView.ItemContainerStyle>-->
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Service Name" Width="240"  DisplayMemberBinding="{Binding IsAdded}"/>
+                        <GridViewColumn Header="Service Name" Width="240"  DisplayMemberBinding="{Binding Name}"/>
                         <GridViewColumn Header="Remove">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding RemoveService}">
+                                    <Button Name="RemoveServiceButton" Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding}">
                                         <StackPanel>
-                                            <Image Source="pack://application:,,,/Resources/remove.png"/>
+                                            <Image Source="pack://application:,,,/Resources/remove.png" Height="15" Width="15"/>
                                         </StackPanel>
                                     </Button>
                                 </DataTemplate>
@@ -38,9 +41,8 @@
             </ListView>
         </Grid>
         <StackPanel StackPanel.Orientation="Horizontal" DockPanel.Dock="Bottom">
-            <TextBox Name="ServiceNameInput" Height="30" Width="200" DockPanel.Dock="Left"></TextBox>
-            <Button DockPanel.Dock="Right" Command="{Binding AddService}">Add</Button>
-            <Button DockPanel.Dock="Right">Close</Button>
+            <TextBox Name="ServiceNameInput" Height="30" Width="220" DockPanel.Dock="Left"></TextBox>
+            <Button Name="AddServiceButton" Command="{Binding DataContext.AddServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding Text, ElementName=ServiceNameInput}" Width="86" Content="Add"/>
         </StackPanel>
     </DockPanel>
 </Window>

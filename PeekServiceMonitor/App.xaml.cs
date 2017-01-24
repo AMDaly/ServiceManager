@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using PeekServiceMonitor.ViewModel;
 using System.Threading;
 using PeekServiceMonitor.Properties;
+using PeekServiceMonitor.Util;
 
 namespace PeekServiceMonitor
 {
@@ -18,7 +19,7 @@ namespace PeekServiceMonitor
     public partial class App : Application
     {
         private readonly ILog logger;
-        private MainWindowViewModel viewModel;
+        public static MainWindowViewModel viewModel;
         List<String> initialSvcList = new List<String>();
 
         public App()
@@ -32,6 +33,8 @@ namespace PeekServiceMonitor
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             logger.Info("Application_Startup");
+
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             viewModel = new MainWindowViewModel(new ServiceScan());
             
@@ -53,6 +56,12 @@ namespace PeekServiceMonitor
             {
                 viewModel.timer.Stop();
             }).Wait();
+        }
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception;
+            MessageBox.Show(ex.Message, "Uncaught Thread Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

@@ -9,7 +9,12 @@ namespace PeekServiceMonitor.ViewModel
 {
     public interface IServiceRunningViewModel
     {
-        String Name
+        string ServiceName
+        {
+            get;
+        }
+
+        string DisplayName
         {
             get;
         }
@@ -19,12 +24,12 @@ namespace PeekServiceMonitor.ViewModel
             get; set;
         }
 
-        String Started
+        string Started
         {
             get; set;
         }
 
-        String Uptime
+        string Uptime
         {
             get; set;
         }

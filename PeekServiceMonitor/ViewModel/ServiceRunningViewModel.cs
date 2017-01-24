@@ -55,7 +55,12 @@ namespace PeekServiceMonitor.ViewModel
             }
         }
         
-        public string Name
+        public string ServiceName
+        {
+            get { return svc.ServiceName; }
+        }
+
+        public string DisplayName
         {
             get { return svc.DisplayName; }
         }
@@ -128,7 +133,7 @@ namespace PeekServiceMonitor.ViewModel
                 {
                     logger.Info($"Service {svc.DisplayName} is Running.");
                     svc.Stop();
-                    svc.WaitForStatus(ServiceControllerStatus.StopPending);
+                    svc.WaitForStatus(ServiceControllerStatus.Stopped);
                 }
 
                 svc.Refresh();
@@ -155,7 +160,11 @@ namespace PeekServiceMonitor.ViewModel
             {
                 var id = processExtensions.GetProcessId(svc);
                 Started = processExtensions.GetStartTime(id);
-                Uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(Started)));
+
+                if (Started != "N/A")
+                {
+                    Uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(Started)));
+                }
             }
             else
             {

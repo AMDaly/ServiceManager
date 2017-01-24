@@ -20,15 +20,16 @@ using PeekServiceMonitor.Util;
 
 namespace PeekServiceMonitor.ViewModel
 {
-    class MainWindowViewModel : NotifyPropertyChangedBase
+    public class MainWindowViewModel : NotifyPropertyChangedBase
     {
-        private readonly ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
+        public ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
         private IServiceRunningViewModel _selectedService;
         private ProcessExtensions processExtensions = new ProcessExtensions();
-        public System.Timers.Timer timer = new System.Timers.Timer();
+        public Timer timer = new Timer();
         private readonly ILog logger;
         private LogView logView = new LogView();
         private EditServicesView editServicesView = new EditServicesView();
+        public EditServicesViewModel editServicesViewModel = new EditServicesViewModel();
         private LogEntryBuilder builder = new LogEntryBuilder();
 
         public MainWindowViewModel(ICommand onInitializeCommand)
@@ -46,7 +47,7 @@ namespace PeekServiceMonitor.ViewModel
             OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => _services.Count > 0);
             OpenServiceLogCommand = new RelayCommand(o => OpenServiceLog(), p => _services.Count > 0);
 
-            timer.Interval = 100;
+            timer.Interval = 200;
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
         }
@@ -82,7 +83,7 @@ namespace PeekServiceMonitor.ViewModel
         {
             foreach (var svc in _services)
             {
-                var svcViewModel = new ServiceRunningViewModel(svc.Name);
+                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
 
                 if (svcViewModel.Status == ServiceControllerStatus.Stopped)
                 {
@@ -96,7 +97,7 @@ namespace PeekServiceMonitor.ViewModel
         {
             foreach (var svc in _services)
             {
-                var svcViewModel = new ServiceRunningViewModel(svc.Name);
+                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
 
                 if (svcViewModel.Status == ServiceControllerStatus.Running)
                 {
@@ -110,18 +111,30 @@ namespace PeekServiceMonitor.ViewModel
         {
             foreach (var svc in _services)
             {
-                var svcViewModel = new ServiceRunningViewModel(svc.Name);
+                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
 
                 svcViewModel.RestartService(svc.Service);
                 svcViewModel.Service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
             }
         }
-
+        
         public void OpenEditServices()
         {
             if (!editServicesView.IsVisible)
             {
-                editServicesView.Show();
+                if (editServicesView.IsLoaded)
+                {
+                    editServicesView.Show();
+                }
+                else
+                {
+                    editServicesView = new EditServicesView()
+                    {
+                        DataContext = editServicesViewModel
+                    };
+
+                    editServicesView.Show();
+                }
             }
             else
             {
@@ -134,7 +147,16 @@ namespace PeekServiceMonitor.ViewModel
             if (!logView.IsVisible)
             {
                 builder.CaptureEvents();
-                logView.Show();
+
+                if (logView.IsLoaded)
+                {
+                    logView.Show();
+                }
+                else
+                {
+                    logView = new LogView();
+                    logView.Show();
+                }
             }
             else
             {

@@ -24,9 +24,7 @@ namespace PeekServiceMonitor.View
         {
             InitializeComponent();
 
-            var viewModel = new EditServicesViewModel();
-
-            DataContext = viewModel.AddedServices;
+            //var viewModel = new EditServicesViewModel();
         }
     }
 }

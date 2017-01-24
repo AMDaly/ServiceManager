@@ -95,6 +95,7 @@
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="PropertyChanged\NotifyPropertyChangedBase.cs" />
     <Compile Include="PropertyChanged\PropertyChangedBase.cs" />
+    <Compile Include="Util\ExceptionHandler.cs" />
     <Compile Include="Util\LogEntryBuilder.cs" />
     <Compile Include="ViewModel\AddedServiceViewModel.cs" />
     <Compile Include="ViewModel\EditServicesViewModel.cs" />
