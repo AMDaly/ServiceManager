@@ -14,10 +14,13 @@ namespace PeekServiceMonitor.ViewModel
     public class TaskbarIconViewModel : NotifyPropertyChangedBase
     {
         private readonly ILog logger;
+        private PeekServiceCollection peekServiceCollection;
 
-        public TaskbarIconViewModel()
+        public TaskbarIconViewModel(PeekServiceCollection peekServiceCollection)
         {
             logger = LogManager.GetLogger(typeof(TaskbarIconViewModel));
+
+            this.peekServiceCollection = peekServiceCollection;
 
             ShowMainWindowCommand = new RelayCommand(o => ShowMainWindow(), p => !App.mainView.IsVisible);
             HideMainWindowCommand = new RelayCommand(o => HideMainWindow(), p => App.mainView.IsVisible);

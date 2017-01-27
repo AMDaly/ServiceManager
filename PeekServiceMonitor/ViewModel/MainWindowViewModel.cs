@@ -31,7 +31,7 @@ namespace PeekServiceMonitor.ViewModel
         private LogEntryBuilder builder = new LogEntryBuilder();
         private readonly PeekServiceCollection _services;
 
-        public MainWindowViewModel(ICommand onInitializeCommand)
+        public MainWindowViewModel(ICommand onInitializeCommand, PeekServiceCollection peekServiceCollection)
         {
             logger = LogManager.GetLogger(typeof(MainWindowViewModel));
 
@@ -40,7 +40,7 @@ namespace PeekServiceMonitor.ViewModel
                 onInitializeCommand.Execute(this);
             });
 
-            _services = new PeekServiceCollection();
+            _services = peekServiceCollection;
             StartAllServicesCommand = new RelayCommand(o => _services.StartAllServices(), p => _services.Services.Count > 0);
             StopAllServicesCommand = new RelayCommand(o => _services.StopAllServices(), p => _services.Services.Count > 0);
             RestartAllServicesCommand = new RelayCommand(o => _services.RestartAllServices(), p => _services.Services.Count > 0);

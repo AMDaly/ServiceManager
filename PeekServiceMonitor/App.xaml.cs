@@ -40,20 +40,23 @@ namespace PeekServiceMonitor
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            viewModel = new MainWindowViewModel(new ServiceScan());
-            
+            var peekServiceCollection = new PeekServiceCollection();
             if (Settings.Default.AddedServices != null && Settings.Default.AddedServices.Count > 0)
             {
                 foreach (var svc in Settings.Default.AddedServices)
                 {
-                    viewModel.Services.Add(new ServiceRunningViewModel(svc));
+                    peekServiceCollection.Add(new ServiceRunningViewModel(svc));
                 }
             }
+
+            viewModel = new MainWindowViewModel(new ServiceScan(), peekServiceCollection);
+            
 
             MainWindow = mainView = new MainWindow { DataContext = viewModel };
             MainWindow.Show();
 
             tb = (TaskbarIcon)FindResource("NotifyIcon");
+            tb.DataContext = new TaskbarIconViewModel(peekServiceCollection);
         }
 
         private void OnMainWindowClosing()
