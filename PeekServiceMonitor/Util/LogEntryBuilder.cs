@@ -40,6 +40,12 @@ namespace PeekServiceMonitor.Util
                 {
                     var msg = eventdetail.FormatDescription();
 
+                    //If query returns 0 matches - skip Regex
+                    if (msg == null)
+                    {
+                        break;
+                    }
+
                     if (Regex.IsMatch(msg, "peek", RegexOptions.IgnoreCase)
                         || Regex.IsMatch(msg, "semex", RegexOptions.IgnoreCase)
                         || Regex.IsMatch(msg, "spinnaker", RegexOptions.IgnoreCase))
