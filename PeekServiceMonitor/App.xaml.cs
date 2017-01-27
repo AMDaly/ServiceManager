@@ -10,6 +10,8 @@ using PeekServiceMonitor.ViewModel;
 using System.Threading;
 using PeekServiceMonitor.Properties;
 using PeekServiceMonitor.Util;
+using Hardcodet.Wpf.TaskbarNotification;
+
 
 namespace PeekServiceMonitor
 {
@@ -20,6 +22,8 @@ namespace PeekServiceMonitor
     {
         private readonly ILog logger;
         public static MainWindowViewModel viewModel;
+        public static MainWindow mainView;
+        private TaskbarIcon tb;
         List<String> initialSvcList = new List<String>();
 
         public App()
@@ -46,8 +50,10 @@ namespace PeekServiceMonitor
                 }
             }
 
-            MainWindow = new MainWindow { DataContext = viewModel };
+            MainWindow = mainView = new MainWindow { DataContext = viewModel };
             MainWindow.Show();
+
+            tb = (TaskbarIcon)FindResource("NotifyIcon");
         }
 
         private void OnMainWindowClosing()

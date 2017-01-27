@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:PeekServiceMonitor"
              Startup="Application_Startup" ShutdownMode="OnMainWindowClose">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Taskbar/TaskbarIconResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
