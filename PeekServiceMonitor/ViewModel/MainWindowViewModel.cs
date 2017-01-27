@@ -169,5 +169,21 @@ namespace PeekServiceMonitor.ViewModel
             get { return _selectedService; }
             set { SetField(ref _selectedService, value); }
         }
+
+        public void ShowWindow()
+        {
+            if (App.mainView.IsVisible)
+            {
+                App.mainView.Show();
+            }
+        }
+
+        public void HideWindow()
+        {
+            if (!App.mainView.IsVisible)
+            {
+                App.mainView.Hide();
+            }
+        }
     }
 }
