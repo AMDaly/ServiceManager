@@ -38,7 +38,7 @@ namespace PeekServiceMonitor.Commands
                     try
                     {
                         logger.Info($"Adding Service {svcName}");
-                        parameter.Add(new ServiceRunningViewModel(svc.ServiceName));
+                        parameter.Services.Add(new ServiceRunningViewModel(svc.ServiceName));
                         logger.Info($"Service {svcName} added.");
                     }
                     catch (Exception ex)

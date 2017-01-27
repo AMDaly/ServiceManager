@@ -82,7 +82,7 @@ namespace PeekServiceMonitor.ViewModel
             {
                 Properties.Settings.Default.AddedServices.Add(desiredSvcName);
                 _addedServices.Add(new AddedServiceViewModel(desiredSvcName));
-                App.viewModel.Add(new ServiceRunningViewModel(desiredSvcName));
+                App.viewModel.Services.Add(new ServiceRunningViewModel(desiredSvcName));
             }
         }
         
@@ -92,21 +92,21 @@ namespace PeekServiceMonitor.ViewModel
 
             Properties.Settings.Default.AddedServices.Remove(desiredSvc.Name);
             _addedServices.Remove(desiredSvc);
-            foreach (var x in App.viewModel._services)
+            foreach (var x in App.viewModel.Services)
             {
                 Debug.WriteLine(x.ServiceName);
             }
 
-            var serviceNameMatch = App.viewModel._services.Where(p => p.ServiceName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var displayNameMatch = App.viewModel._services.Where(p => p.DisplayName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var serviceNameMatch = App.viewModel.Services.Where(p => p.ServiceName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var displayNameMatch = App.viewModel.Services.Where(p => p.DisplayName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
 
             if (serviceNameMatch.Count() == 1)
             {
-                App.viewModel._services.Remove(serviceNameMatch[0]);
+                App.viewModel.Services.Remove(serviceNameMatch[0]);
             }
             else if (displayNameMatch.Count() == 1)
             {
-                App.viewModel._services.Remove(displayNameMatch[0]);
+                App.viewModel.Services.Remove(displayNameMatch[0]);
             }
         }
     }

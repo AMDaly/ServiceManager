@@ -113,6 +113,7 @@
     <Compile Include="ViewModel\IServiceRunningViewModel.cs" />
     <Compile Include="ViewModel\LogViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\PeekServiceCollection.cs" />
     <Compile Include="ViewModel\ServiceRunningViewModel.cs" />
     <Compile Include="ViewModel\TaskbarIconViewModel.cs" />
     <Compile Include="View\EditServicesView.xaml.cs">

@@ -22,15 +22,14 @@ namespace PeekServiceMonitor.ViewModel
 {
     public class MainWindowViewModel : NotifyPropertyChangedBase
     {
-        public ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
         private IServiceRunningViewModel _selectedService;
         private ProcessExtensions processExtensions = new ProcessExtensions();
-        public Timer timer = new Timer();
         private readonly ILog logger;
         private LogView logView = new LogView();
         private EditServicesView editServicesView = new EditServicesView();
         public EditServicesViewModel editServicesViewModel = new EditServicesViewModel();
         private LogEntryBuilder builder = new LogEntryBuilder();
+        private readonly PeekServiceCollection _services;
 
         public MainWindowViewModel(ICommand onInitializeCommand)
         {
@@ -41,15 +40,12 @@ namespace PeekServiceMonitor.ViewModel
                 onInitializeCommand.Execute(this);
             });
 
-            StartAllServicesCommand = new RelayCommand(o => StartAllServices(), p => _services.Count > 0);
-            StopAllServicesCommand = new RelayCommand(o => StopAllServices(), p => _services.Count > 0);
-            RestartAllServicesCommand = new RelayCommand(o => RestartAllServices(), p => _services.Count > 0);
-            OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => _services.Count > 0);
-            OpenServiceLogCommand = new RelayCommand(o => OpenServiceLog(), p => _services.Count > 0);
-
-            timer.Interval = 200;
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
+            _services = new PeekServiceCollection();
+            StartAllServicesCommand = new RelayCommand(o => _services.StartAllServices(), p => _services.Services.Count > 0);
+            StopAllServicesCommand = new RelayCommand(o => _services.StopAllServices(), p => _services.Services.Count > 0);
+            RestartAllServicesCommand = new RelayCommand(o => _services.RestartAllServices(), p => _services.Services.Count > 0);
+            OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => _services.Services.Count > 0);
+            OpenServiceLogCommand = new RelayCommand(o => OpenServiceLog(), p => _services.Services.Count > 0);
         }
 
         public ICommand StartAllServicesCommand { get; private set; }
@@ -58,66 +54,6 @@ namespace PeekServiceMonitor.ViewModel
         public ICommand OpenEditServicesCommand { get; private set; }
         public ICommand OpenServiceLogCommand { get; private set; }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            foreach (var svc in _services.ToList())
-            {
-                svc.UpdateState();
-            }
-        }
-
-        public ObservableCollection<IServiceRunningViewModel> Services
-        {
-            get { return _services; }
-        }
-
-        public void Add(ServiceRunningViewModel serviceViewModel)
-        {
-            ApplicationThreadHelper.Invoke(() =>
-            {
-                _services.Add(serviceViewModel);
-            });
-        }
-
-        public void StartAllServices()
-        {
-            foreach (var svc in _services)
-            {
-                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
-
-                if (svcViewModel.Status == ServiceControllerStatus.Stopped)
-                {
-                    svcViewModel.StartService(svc.Service);
-                    svcViewModel.Service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
-                }
-            }
-        }
-
-        public void StopAllServices()
-        {
-            foreach (var svc in _services)
-            {
-                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
-
-                if (svcViewModel.Status == ServiceControllerStatus.Running)
-                {
-                    svcViewModel.StopService(svc.Service);
-                    svcViewModel.Service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(15));
-                }
-            }
-        }
-
-        public void RestartAllServices()
-        {
-            foreach (var svc in _services)
-            {
-                var svcViewModel = new ServiceRunningViewModel(svc.ServiceName);
-
-                svcViewModel.RestartService(svc.Service);
-                svcViewModel.Service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
-            }
-        }
-        
         public void OpenEditServices()
         {
             if (!editServicesView.IsVisible)
@@ -168,6 +104,11 @@ namespace PeekServiceMonitor.ViewModel
         {
             get { return _selectedService; }
             set { SetField(ref _selectedService, value); }
+        }
+
+        public ObservableCollection<IServiceRunningViewModel> Services
+        {
+            get { return _services.Services; }
         }
 
         public void ShowWindow()

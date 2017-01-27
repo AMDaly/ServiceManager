@@ -46,7 +46,7 @@ namespace PeekServiceMonitor
             {
                 foreach (var svc in Settings.Default.AddedServices)
                 {
-                    viewModel.Add(new ServiceRunningViewModel(svc));
+                    viewModel.Services.Add(new ServiceRunningViewModel(svc));
                 }
             }
 
@@ -60,7 +60,7 @@ namespace PeekServiceMonitor
         {
             Task.Run(() =>
             {
-                viewModel.timer.Stop();
+//                viewModel.PeekServiceCollection.timer.Stop();
             }).Wait();
         }
 

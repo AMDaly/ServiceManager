@@ -13,7 +13,7 @@ namespace PeekServiceMonitor.ViewModel
     public class ServiceRunningViewModel : NotifyPropertyChangedBase, IServiceRunningViewModel
     {
         private readonly ILog logger;
-        private readonly ServiceController svc;
+        private readonly string _svcName;
         private readonly ServiceControllerStatus _originalServiceState;
         private ServiceControllerStatus _serviceState;
         private int id;
@@ -21,26 +21,29 @@ namespace PeekServiceMonitor.ViewModel
         private string uptime;
         private bool _selected;
 
-        private ProcessExtensions processExtensions = new ProcessExtensions();
+        private readonly ProcessExtensions processExtensions = new ProcessExtensions();
 
         public ServiceRunningViewModel(String svcName)
         {
             logger = LogManager.GetLogger(typeof(ServiceRunningViewModel));
-            ProcessExtensions processExtensions = new ProcessExtensions();
-            
+
             try
             {
-                svc = new ServiceController(svcName);
+                _svcName = svcName;
+                Service = new ServiceController(svcName);
+                _serviceState = Service.Status;
 
-                StartServiceCommand = new RelayCommand(o => StartService(svc), p => Status == ServiceControllerStatus.Stopped);
-                StopServiceCommand = new RelayCommand(o => StopService(svc), p => Status == ServiceControllerStatus.Running);
-                RestartServiceCommand = new RelayCommand(o => RestartService(svc), p => Status == ServiceControllerStatus.Running);
+                StartServiceCommand = new RelayCommand(o => StartService(Service),
+                    p => Status == ServiceControllerStatus.Stopped);
+                StopServiceCommand = new RelayCommand(o => StopService(Service),
+                    p => Status == ServiceControllerStatus.Running);
+                RestartServiceCommand = new RelayCommand(o => RestartService(Service),
+                    p => Status == ServiceControllerStatus.Running);
 
-                _serviceState = svc.Status;
-                id = processExtensions.GetProcessId(svc);
+                id = processExtensions.GetProcessId(Service);
                 startTime = processExtensions.GetStartTime(id);
 
-                if (svc.Status == ServiceControllerStatus.Running)
+                if (Service.Status == ServiceControllerStatus.Running)
                 {
                     uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(startTime)));
                 }
@@ -48,6 +51,13 @@ namespace PeekServiceMonitor.ViewModel
                 {
                     uptime = "N/A";
                 }
+            }
+            catch (InvalidOperationException)
+            {
+                // This typically means that the service doesn't exist. Get rid of our bogus ServiceController
+                // as it'll never return anything useful. We can then test for svc == null elsewhere and early out.
+                logger.Warn($"Service {_svcName} does not appear to exist.");
+                Service = null;
             }
             catch (Exception ex)
             {
@@ -57,12 +67,12 @@ namespace PeekServiceMonitor.ViewModel
         
         public string ServiceName
         {
-            get { return svc.ServiceName; }
+            get { return Service.ServiceName; }
         }
 
         public string DisplayName
         {
-            get { return svc.DisplayName; }
+            get { return Service.DisplayName; }
         }
 
         public ServiceControllerStatus Status
@@ -71,10 +81,7 @@ namespace PeekServiceMonitor.ViewModel
             set { SetField(ref _serviceState, value); }
         }
 
-        public ServiceController Service
-        {
-            get { return svc; }
-        }
+        public ServiceController Service { get; }
 
         public string Started
         {
@@ -153,12 +160,15 @@ namespace PeekServiceMonitor.ViewModel
 
         public void UpdateState()
         {
-            svc.Refresh();
-            Status = svc.Status;
+            if (Service == null) return;
 
-            if (svc.Status == ServiceControllerStatus.Running)
+            Service.Refresh();
+
+            Status = Service.Status;
+
+            if (Service.Status == ServiceControllerStatus.Running)
             {
-                var id = processExtensions.GetProcessId(svc);
+                var id = processExtensions.GetProcessId(Service);
                 Started = processExtensions.GetStartTime(id);
 
                 if (Started != "N/A")
