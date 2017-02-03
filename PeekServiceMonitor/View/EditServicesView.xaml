@@ -7,42 +7,85 @@
         xmlns:viewModel="clr-namespace:PeekServiceMonitor.ViewModel"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:EditServicesViewModel, IsDesignTimeCreatable=False}"
-        
-        Title="EditServicesView" Height="315" Width="315">
-    <DockPanel DockPanel.Dock="Top">
-        <Grid DockPanel.Dock="Top" Height="250">
-            <ListView ItemsSource="{Binding AddedServices}">
-                <!--<ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="TextBlock.IsEnabled" Value="{Binding Name}"/>
-                        <Style.Triggers>
-                            <DataTrigger>
-
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListView.ItemContainerStyle>-->
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Service Name" Width="240"  DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Header="Remove">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Name="RemoveServiceButton" Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding}">
-                                        <StackPanel>
-                                            <Image Source="pack://application:,,,/Resources/remove.png" Height="15" Width="15"/>
-                                        </StackPanel>
-                                    </Button>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>
-        <StackPanel StackPanel.Orientation="Horizontal" DockPanel.Dock="Bottom">
-            <TextBox Name="ServiceNameInput" Height="30" Width="220" DockPanel.Dock="Left"></TextBox>
-            <Button Name="AddServiceButton" Command="{Binding DataContext.AddServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding Text, ElementName=ServiceNameInput}" Width="86" Content="Add"/>
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        Title="EditServicesView">
+    <Window.Resources>
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </Window.Resources>
+    <Border
+        Background="WhiteSmoke"
+        BorderBrush="Crimson"
+        BorderThickness="3"
+        CornerRadius="8"
+        Height="Auto"
+        Width="Auto"
+        MinWidth="220">
+        <StackPanel Margin="3,3,3,3">
+            <StackPanel Height="Auto" Width="Auto">
+                <Grid>
+                    <TextBlock 
+                        Text="Edit Services"
+                        Foreground="Crimson"
+                        Width="Auto"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="DemiBold"/>
+                    <Image Source="pack://application:,,,/Resources/Settings.png" HorizontalAlignment="Left" Height="32" Width="32"/>
+                    <Button Command="{Binding HideEditWindowCommand}" HorizontalAlignment="Right" Background="Transparent" BorderBrush="Transparent">
+                        <Image Source="pack://application:,,,/Resources/Minimize.png" Height="24" Width="24"/>
+                    </Button>
+                </Grid>
+            </StackPanel>
+            <Grid>
+                <ListView x:Name="AddedServiceListView" ItemsSource="{Binding AddedServices}" Width="Auto" BorderBrush="Transparent">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn x:Name="nameCol" Header=" Service Name" DisplayMemberBinding="{Binding Name}" Width="{Binding ElementName=helperField, Path=ActualWidth}"/>
+                            <GridViewColumn x:Name="removeCol" Width="Auto">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Name="RemoveServiceButton" Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding}" HorizontalContentAlignment="Center" Background="Transparent" BorderBrush="Transparent">
+                                            <StackPanel>
+                                                <Image Source="pack://application:,,,/Resources/remove.png" Height="15" Width="15"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+            <Grid Visibility="Hidden" Width="260">
+                <Grid.ColumnDefinitions>
+                    <!--Width is bound to width of the first GridViewColumn -->
+                    <ColumnDefinition Width="*"/>
+                    <!--Width is set to "Fill"-->
+                    <ColumnDefinition Width="{Binding ElementName=removeCol, Path=ActualWidth}"/>
+                    <!--Correction Width-->
+                    <ColumnDefinition Width="0"/>
+                </Grid.ColumnDefinitions>
+                <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
+                <Grid Grid.Column="0" x:Name="helperField"/>
+            </Grid>
+            <Grid Height="Auto" x:Name="AddTextbox">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="ServiceNameInput" Height="22" MaxWidth="240" HorizontalAlignment="Stretch" ForceCursor="True" BorderBrush="Crimson" FontSize="14" Grid.Column="0"/>
+                <Button Name="AddServiceButton" Command="{Binding DataContext.AddServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding Text, ElementName=ServiceNameInput}" Height="Auto"  Width="Auto" Background="Transparent" BorderBrush="Transparent" Grid.Column="1">
+                    <StackPanel>
+                        <Image Source="pack://application:,,,/Resources/Add.png" Height="24" Width="24" />
+                    </StackPanel>
+                </Button>
+            </Grid>
         </StackPanel>
-    </DockPanel>
+    </Border>
 </Window>

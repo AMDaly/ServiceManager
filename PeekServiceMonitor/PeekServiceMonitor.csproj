@@ -68,6 +68,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
@@ -173,7 +174,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
@@ -183,31 +184,23 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\AppUrgent.png" />
+    <Resource Include="Resources\AppCool.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\remove.png" />
+    <Resource Include="Resources\PlayDisabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\GreenLight.png" />
-    <Resource Include="Resources\Log.png" />
-    <Resource Include="Resources\PlayDisabled.png" />
     <Resource Include="Resources\PlayHot.png" />
-    <Resource Include="Resources\RedLight.png" />
+    <Resource Include="Resources\remove.png" />
     <Resource Include="Resources\RestartDisabled.png" />
     <Resource Include="Resources\RestartHot.png" />
-    <Resource Include="Resources\Settings.png" />
+    <Resource Include="Resources\ServicePopupIcon.png" />
     <Resource Include="Resources\StopDisabled.png" />
     <Resource Include="Resources\StopHot.png" />
-    <Resource Include="Resources\YellowLight.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\app.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\app.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\left_click.png" />
@@ -216,7 +209,40 @@
     <Resource Include="Resources\right_click.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\service_popup_icon.png" />
+    <Resource Include="Resources\StartAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\StopAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RestartAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\LogCool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\LogUrgent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GreenLight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RedLight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AppCool.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AppUrgent.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

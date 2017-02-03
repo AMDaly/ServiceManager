@@ -23,8 +23,14 @@ namespace PeekServiceMonitor.View
         public EditServicesView()
         {
             InitializeComponent();
+        }
 
-            //var viewModel = new EditServicesViewModel();
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+
+            // Begin dragging the window
+            DragMove();
         }
     }
 }

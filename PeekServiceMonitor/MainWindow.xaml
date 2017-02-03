@@ -7,118 +7,223 @@
         xmlns:converters="clr-namespace:PeekServiceMonitor.Converters"
         xmlns:local="clr-namespace:PeekServiceMonitor"
         xmlns:viewModel="clr-namespace:PeekServiceMonitor.ViewModel"
+        xmlns:resx="clr-namespace:PeekServiceMonitor.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel, IsDesignTimeCreatable=False}"
-        Title="Peek Service Manager" Height="350" Width="650">
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None"
+        Title="Peek Service Manager" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <converters:EnumMatchToBooleanConverter x:Key="EnumMatchToBooleanConverter"/>
     </Window.Resources>
-    <DockPanel>
-        <DockPanel DockPanel.Dock="Top" Visibility="Visible">
-            <Menu>
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Close"/>
-                </MenuItem>
-                <StackPanel></StackPanel>
-            </Menu>
-        </DockPanel>
-        <DockPanel DockPanel.Dock="Top" DataContext="{Binding SelectedService}">
-            <Button ToolTip="Start the selected service." Name="StartButton" Command="{Binding StartServiceCommand}">
-                <Image  Width="16" Height="16" Margin="3,0">
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
+    <Border BorderBrush="Crimson" BorderThickness="3" CornerRadius="4" Height="Auto" Width="Auto" Background="WhiteSmoke">
+        <DockPanel Margin="3,0,3,0">
+            <DockPanel DockPanel.Dock="Top" Visibility="Visible">
+                <Grid Height="Auto" Margin="3,0,3,0">
+                    <Image Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Source" Value="pack://application:,,,/Resources/AppCool.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ServicesStopped}" Value="True">
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/AppUrgent.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ServicesStopped}" Value="False">
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/AppCool.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <TextBlock Text="Peek Service Monitor" FontSize="16" FontWeight="DemiBold" Foreground="Crimson" HorizontalAlignment="Center"/>
+                    <Button Command="{Binding HideWindowCommand}" VerticalAlignment="Center" HorizontalAlignment="Right" Background="Transparent" BorderBrush="Transparent">
+                        <Image Source="pack://application:,,,/Resources/Minimize.png" Height="20" Width="20"/>
+                    </Button>
+                </Grid>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top" DataContext="{Binding SelectedService}" HorizontalAlignment="Stretch" Margin="3,0,3,0">
+                <Button ToolTip="Start the selected service." Name="StartButton" Command="{Binding StartServiceCommand}" Background="WhiteSmoke" BorderBrush="Transparent">
+                    <Image  Width="16" Height="16" Margin="3,0">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Source" Value="pack://application:,,,/Resources/PlayDisabled.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/PlayHot.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
+                <Button ToolTip="Stop the selected service." Name="StopSelectedButton" Command="{Binding StopServiceCommand}" Background="WhiteSmoke" BorderBrush="Transparent">
+                    <Image Width="16" Height="16" Margin="3,0">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Source" Value="pack://application:,,,/Resources/StopDisabled.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/StopHot.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
+                <Button ToolTip="Restart the selected service." Name="RestartSelectedButton" Command="{Binding RestartServiceCommand}" HorizontalAlignment="Left" Background="WhiteSmoke" BorderBrush="Transparent">
+                    <Image Width="16" Height="16" Margin="3,0">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Source" Value="pack://application:,,,/Resources/RestartDisabled.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/RestartHot.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom" Visibility="Visible" Margin="3,0,3,0">
+                <Button DockPanel.Dock="Left" Width="70" Height="Auto" Command="{Binding StartAllServicesCommand}" Background="WhiteSmoke" BorderBrush="Transparent" ToolTip="Start all listed services.">
+                    <StackPanel>
+                        <Image Source="pack://application:,,,/Resources/StartAll.png" Height="32" Width="32"/>
+                        <TextBlock Text="Start All" FontWeight="DemiBold"/>
+                    </StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left" Width="70" Height="Auto" Command="{Binding StopAllServicesCommand}" Background="WhiteSmoke" BorderBrush="Transparent" ToolTip="Stop all listed services.">
+                    <StackPanel>
+                        <Image Source="pack://application:,,,/Resources/StopAll.png" Height="32" Width="32"/>
+                        <TextBlock Text="Stop All" FontWeight="DemiBold"/>
+                    </StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left" Width="70" Height="Auto" Command="{Binding RestartAllServicesCommand}" Background="WhiteSmoke" BorderBrush="Transparent" ToolTip="Restart all listed services.">
+                    <StackPanel>
+                        <Image Source="pack://application:,,,/Resources/RestartAll.png" Height="32" Width="32"/>
+                        <TextBlock Text="Restart All" FontWeight="DemiBold"/>
+                    </StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Right" Width="75" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenEditServicesCommand}" Background="WhiteSmoke" BorderBrush="Transparent">
+                    <StackPanel>
+                        <Image Source="pack://application:,,,/Resources/Settings.png" Width="32" Height="32"/>
+                        <TextBlock Text="Edit Services" FontWeight="DemiBold"/>
+                    </StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Right" Width="75" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenServiceLogCommand}" Background="WhiteSmoke" BorderBrush="Transparent">
+                    <StackPanel>
+                        <Image Width="32" Height="32">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source" Value="pack://application:,,,/Resources/LogCool.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EventsExist}" Value="True">
+                                            <Setter Property="Source" Value="pack://application:,,,/Resources/LogUrgent.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Text="Event Log" FontWeight="DemiBold"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+            <Grid Margin="3,0,3,0">
+                <ListView Name="ServiceList" Width="Auto" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}" BorderBrush="Transparent">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding Selected}"/>
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu Background="GhostWhite">
+                                        <MenuItem Header="Start" Command="{Binding StartServiceCommand}" Background="GhostWhite">
+                                            <MenuItem.Icon>
+                                                <Image Width="16" Height="16">
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/PlayHot.png"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/PlayDisabled.png"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Stop" Command="{Binding StopServiceCommand}" Background="GhostWhite">
+                                            <MenuItem.Icon>
+                                                <Image Width="16" Height="16">
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/StopHot.png"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/StopDisabled.png"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Restart" Command="{Binding RestartServiceCommand}" Background="GhostWhite">
+                                            <MenuItem.Icon>
+                                                <Image Width="16" Height="16">
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/RestartHot.png"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                    <Setter Property="Source" Value="pack://application:,,,/Resources/RestartDisabled.png"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/PlayHot.png"/>
+                                <DataTrigger Binding="{Binding Selected}" Value="True">
+                                    <Setter Property="BorderBrush" Value="CadetBlue"/>
+                                    <Setter Property="BorderThickness" Value="2"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/PlayDisabled.png"/>
+                                    <Setter Property="Background" Value="LightGreen"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                    <Setter Property="Background" Value="LightPink"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.StartPending}">
+                                    <Setter Property="Background" Value="LightGreen"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.StopPending}">
+                                    <Setter Property="Background" Value="LightYellow"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
-            <Button ToolTip="Stop the selected service." Name="StopSelectedButton" Command="{Binding StopServiceCommand}">
-                <Image Width="16" Height="16" Margin="3,0">
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/StopHot.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/StopDisabled.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
-            <Button ToolTip="Restart the selected service." Name="RestartSelectedButton" Command="{Binding RestartServiceCommand}" HorizontalAlignment="Left">
-                <Image Width="16" Height="16" Margin="3,0">
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/RestartHot.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
-                                    <Setter Property="Source" Value="pack://application:,,,/Resources/RestartDisabled.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ServiceName}" Width="200"/>
+                            <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="Auto"/>
+                            <GridViewColumn Header="Uptime" DisplayMemberBinding="{Binding Uptime}" Width="Auto"/>
+                            <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
         </DockPanel>
-        <DockPanel DockPanel.Dock="Bottom" Visibility="Visible">
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StartAllServicesCommand}">Start All</Button>
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding StopAllServicesCommand}">Stop All</Button>
-            <Button DockPanel.Dock="Left" Width="75" Command="{Binding RestartAllServicesCommand}">Restart All</Button>
-            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenEditServicesCommand}">
-                <StackPanel>
-                    <Image Source="pack://application:,,,/Resources/Settings.png" Width="50" Height="50"/>
-                    <TextBlock>Edit Services</TextBlock>
-                </StackPanel>
-            </Button>
-            <Button DockPanel.Dock="Right" Width="75" VerticalAlignment="Bottom" HorizontalAlignment="Right" Command="{Binding OpenServiceLogCommand}">
-                <StackPanel>
-                    <Image Source="pack://application:,,,/Resources/Log.png" Width="50" Height="50"/>
-                    <TextBlock>Service Log</TextBlock>
-                </StackPanel>
-            </Button>
-        </DockPanel>
-        <Grid>
-            <ListView Name="ServiceList" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="IsSelected" Value="{Binding Selected}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
-                                <Setter Property="Background" Value="LightGreen"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
-                                <Setter Property="Background" Value="LightPink"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.StartPending}">
-                                <Setter Property="Background" Value="LightGreen"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.StopPending}">
-                                <Setter Property="Background" Value="LightYellow"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ServiceName}" Width="200"/>
-                        <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="150"/>
-                        <GridViewColumn Header="Uptime" DisplayMemberBinding="{Binding Uptime}" Width="150"/>
-                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="150"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>
-    </DockPanel>
+    </Border>
 </Window>
