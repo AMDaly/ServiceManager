@@ -1,4 +1,5 @@
 ﻿using PeekServiceMonitor.PropertyChanged;
+using System.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,9 @@ using System.Threading.Tasks;
 using log4net;
 using System.Windows.Input;
 using PeekServiceMonitor.Commands;
+using PeekServiceMonitor.Controls;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -15,6 +19,7 @@ namespace PeekServiceMonitor.ViewModel
     {
         private readonly ILog logger;
         private PeekServiceCollection peekServiceCollection;
+        private TaskbarPopup taskbarPopup;
 
         public TaskbarIconViewModel(PeekServiceCollection peekServiceCollection)
         {
@@ -22,12 +27,22 @@ namespace PeekServiceMonitor.ViewModel
 
             this.peekServiceCollection = peekServiceCollection;
 
+            taskbarPopup = new TaskbarPopup();
+            
             ShowMainWindowCommand = new RelayCommand(o => ShowMainWindow(), p => !App.mainView.IsVisible);
             HideMainWindowCommand = new RelayCommand(o => HideMainWindow(), p => App.mainView.IsVisible);
+            ExitApplicationCommand = new RelayCommand(o => ExitApplication(), p => Application.Current.MainWindow.IsInitialized);
         }
 
+        public ICommand ShowPopupCommand { get; private set; }
         public ICommand ShowMainWindowCommand { get; private set; }
         public ICommand HideMainWindowCommand { get; private set; }
+        public ICommand ExitApplicationCommand { get; private set; }
+
+        public ObservableCollection<IServiceRunningViewModel> Services
+        {
+            get { return peekServiceCollection.Services; }
+        }
 
         public void ShowMainWindow()
         {
@@ -37,6 +52,11 @@ namespace PeekServiceMonitor.ViewModel
         public void HideMainWindow()
         {
             App.mainView.Hide();
+        }
+        
+        public void ExitApplication()
+        {
+            Application.Current.MainWindow.Close();
         }
     }
 }

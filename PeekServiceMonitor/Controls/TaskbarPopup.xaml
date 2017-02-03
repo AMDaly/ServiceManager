@@ -4,29 +4,141 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PeekServiceMonitor.Controls"
+             xmlns:System="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
     <Border
-        Background="White"
+        Background="WhiteSmoke"
         BorderBrush="Crimson"
         BorderThickness="3"
         CornerRadius="8"
-        Opacity="0.9" 
-        Height="300"
-        Width="300">
-
+        Opacity="0.9"
+        Height="Auto"
+        Width="Auto">
         <StackPanel>
-            <StackPanel Orientation="Horizontal" Height="60">
-                <Image Source="pack://application:,,,/Resources/service_popup_icon.png" Height="55" Width="58"/>
+            <Grid Height="32" Width="Auto">
+                <Image Source="pack://application:,,,/Resources/ServicePopupIcon.png" HorizontalAlignment="Left"/>
                 <TextBlock 
-                    Text="Peek Service Status" 
+                    Text="Peek Service Status"
+                    Foreground="Crimson"
+                    Width="Auto"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontSize="20"
-                    FontWeight="DemiBold"
-                    Padding="20"/>
-            </StackPanel>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-            <ListView Height="228"></ListView>
+                    FontSize="16"
+                    FontWeight="DemiBold"/>
+            </Grid>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Background="Crimson"/>
+            <ListView ItemsSource="{Binding Services}" Width="Auto" HorizontalAlignment="Left" BorderBrush="Transparent">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu Background="GhostWhite">
+                                    <MenuItem Header="Start" Command="{Binding StartServiceCommand}" Background="GhostWhite">
+                                        <MenuItem.Icon>
+                                            <Image Width="16" Height="16">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/PlayHot.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/PlayDisabled.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Stop" Command="{Binding StopServiceCommand}" Background="GhostWhite">
+                                        <MenuItem.Icon>
+                                            <Image Width="16" Height="16">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/StopHot.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/StopDisabled.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Restart" Command="{Binding RestartServiceCommand}" Background="GhostWhite">
+                                        <MenuItem.Icon>
+                                            <Image Width="16" Height="16">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/RestartHot.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                                <Setter Property="Source" Value="pack://application:,,,/Resources/RestartDisabled.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Height="16" Width="16">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Running}">
+                                                        <Setter Property="Source" Value="pack://application:,,,/Resources/GreenLight.png"/>
+                                                        <Setter Property="ToolTip" Value="Service running."/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static System:ServiceControllerStatus.Stopped}">
+                                                        <Setter Property="Source" Value="pack://application:,,,/Resources/RedLight.png"/>
+                                                        <Setter Property="ToolTip" Value="Service stopped."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header=" Name" Width="Auto" DisplayMemberBinding="{Binding DisplayName}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Separator Background="Crimson"/>
+            <DockPanel>
+                <StackPanel Height="Auto" Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Opacity="0.9">
+                    <Image Source="pack://application:,,,/Resources/right_click.png" Height="16" Width="16" Opacity="0.9"/>
+                    <TextBlock 
+                        Text=":  Service Controls" 
+                        VerticalAlignment="Center"
+                        Padding="5" 
+                        FontStyle="Italic"
+                        FontWeight="DemiBold"/>
+                </StackPanel>
+
+            </DockPanel>
         </StackPanel>
     </Border>
 </UserControl>
