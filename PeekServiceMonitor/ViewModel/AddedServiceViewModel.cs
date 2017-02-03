@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PeekServiceMonitor.PropertyChanged;
+using System.ServiceProcess;
 
 namespace PeekServiceMonitor.ViewModel
 {

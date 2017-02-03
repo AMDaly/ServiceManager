@@ -216,7 +216,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ServiceName}" Width="200"/>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DisplayName}" Width="200"/>
                             <GridViewColumn Header="Started" DisplayMemberBinding="{Binding Started}" Width="Auto"/>
                             <GridViewColumn Header="Uptime" DisplayMemberBinding="{Binding Uptime}" Width="Auto"/>
                             <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>

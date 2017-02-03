@@ -77,11 +77,13 @@ namespace PeekServiceMonitor.ViewModel
 
             if (matches.Count() > 0)
             {
-                Properties.Settings.Default.AddedServices.Add(desiredSvcName);
+                var addedSvc = new ServiceController(desiredSvcName);
+
+                Properties.Settings.Default.AddedServices.Add(addedSvc.DisplayName);
                 Properties.Settings.Default.Save();
 
-                _addedServices.Add(new AddedServiceViewModel(desiredSvcName));
-                App.viewModel.Services.Add(new ServiceRunningViewModel(desiredSvcName));
+                _addedServices.Add(new AddedServiceViewModel(addedSvc.DisplayName));
+                App.viewModel.Services.Add(new ServiceRunningViewModel(addedSvc.DisplayName));
             }
         }
         
