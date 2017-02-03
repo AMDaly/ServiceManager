@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using PeekServiceMonitor.PropertyChanged;
-using PeekServiceMonitor.Wpf;
 using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.View;
-using System.ServiceProcess;
-using System.Timers;
-using System.Linq;
-using System.IO;
 using log4net;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Diagnostics.Eventing.Reader;
 using System.Windows;
-using PeekServiceMonitor.Util;
 
 namespace PeekServiceMonitor.ViewModel
 {

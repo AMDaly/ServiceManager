@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
 using log4net;
-using PeekServiceMonitor.Properties;
 using PeekServiceMonitor.Commands;
-using PeekServiceMonitor.Wpf;
 using System.Windows.Input;
 using System.Threading;
 

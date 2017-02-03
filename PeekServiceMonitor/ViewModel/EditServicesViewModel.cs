@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using PeekServiceMonitor.PropertyChanged;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using PeekServiceMonitor.Commands;
-using System.Diagnostics;
 using System.ServiceProcess;
 
 namespace PeekServiceMonitor.ViewModel

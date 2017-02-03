@@ -3,13 +3,8 @@ using PeekServiceMonitor.View;
 using PeekServiceMonitor.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace PeekServiceMonitor.Util
 {

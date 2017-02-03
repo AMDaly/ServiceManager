@@ -1,17 +1,10 @@
 ﻿using PeekServiceMonitor.PropertyChanged;
 using System.Windows;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 using System.Windows.Input;
 using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.Controls;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace PeekServiceMonitor.ViewModel
 {
