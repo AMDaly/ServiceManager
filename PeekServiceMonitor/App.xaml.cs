@@ -11,7 +11,7 @@ using System.Threading;
 using PeekServiceMonitor.Properties;
 using PeekServiceMonitor.Util;
 using Hardcodet.Wpf.TaskbarNotification;
-
+using System.ComponentModel;
 
 namespace PeekServiceMonitor
 {
@@ -23,8 +23,12 @@ namespace PeekServiceMonitor
         private readonly ILog logger;
         public static MainWindowViewModel viewModel;
         public static MainWindow mainView;
-        private TaskbarIcon tb;
+        public static TaskbarIcon tb;
         List<String> initialSvcList = new List<String>();
+        public static LogViewModel logViewModel = new LogViewModel();
+        public static LogEntryBuilder builder = new LogEntryBuilder();
+        private readonly BackgroundWorker worker = new BackgroundWorker();
+        private readonly PeekServiceCollection peekServiceCollection = new PeekServiceCollection();
 
         public App()
         {
@@ -39,8 +43,7 @@ namespace PeekServiceMonitor
             logger.Info("Application_Startup");
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
-            var peekServiceCollection = new PeekServiceCollection();
+            
             if (Settings.Default.AddedServices != null && Settings.Default.AddedServices.Count > 0)
             {
                 foreach (var svc in Settings.Default.AddedServices)
@@ -50,13 +53,17 @@ namespace PeekServiceMonitor
             }
 
             viewModel = new MainWindowViewModel(new ServiceScan(), peekServiceCollection);
-            
+
+            builder.CaptureEvents();
 
             MainWindow = mainView = new MainWindow { DataContext = viewModel };
             MainWindow.Show();
 
             tb = (TaskbarIcon)FindResource("NotifyIcon");
+            tb.Icon = PeekServiceMonitor.Properties.Resources.IconAppCool;
             tb.DataContext = new TaskbarIconViewModel(peekServiceCollection);
+
+            peekServiceCollection.StartTimer();
         }
 
         private void OnMainWindowClosing()
