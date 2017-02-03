@@ -23,12 +23,12 @@ namespace PeekServiceMonitor.ViewModel
     public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         private IServiceRunningViewModel _selectedService;
+        private bool _servicesStopped;
         private ProcessExtensions processExtensions = new ProcessExtensions();
         private readonly ILog logger;
         private LogView logView = new LogView();
         private EditServicesView editServicesView = new EditServicesView();
-        public EditServicesViewModel editServicesViewModel = new EditServicesViewModel();
-        private LogEntryBuilder builder = new LogEntryBuilder();
+        private EditServicesViewModel editServicesViewModel = new EditServicesViewModel();
         private readonly PeekServiceCollection _services;
 
         public MainWindowViewModel(ICommand onInitializeCommand, PeekServiceCollection peekServiceCollection)
@@ -44,8 +44,9 @@ namespace PeekServiceMonitor.ViewModel
             StartAllServicesCommand = new RelayCommand(o => _services.StartAllServices(), p => _services.Services.Count > 0);
             StopAllServicesCommand = new RelayCommand(o => _services.StopAllServices(), p => _services.Services.Count > 0);
             RestartAllServicesCommand = new RelayCommand(o => _services.RestartAllServices(), p => _services.Services.Count > 0);
-            OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => _services.Services.Count > 0);
+            OpenEditServicesCommand = new RelayCommand(o => OpenEditServices(), p => true);
             OpenServiceLogCommand = new RelayCommand(o => OpenServiceLog(), p => _services.Services.Count > 0);
+            HideWindowCommand = new RelayCommand(o => HideWindow(), p => App.mainView.Visibility == Visibility.Visible);
         }
 
         public ICommand StartAllServicesCommand { get; private set; }
@@ -53,6 +54,7 @@ namespace PeekServiceMonitor.ViewModel
         public ICommand RestartAllServicesCommand { get; private set; }
         public ICommand OpenEditServicesCommand { get; private set; }
         public ICommand OpenServiceLogCommand { get; private set; }
+        public ICommand HideWindowCommand { get; private set; }
 
         public void OpenEditServices()
         {
@@ -64,6 +66,7 @@ namespace PeekServiceMonitor.ViewModel
                 }
                 else
                 {
+
                     editServicesView = new EditServicesView()
                     {
                         DataContext = editServicesViewModel
@@ -78,12 +81,20 @@ namespace PeekServiceMonitor.ViewModel
             }
         }
 
+        public void HideEditServices()
+        {
+            if (editServicesView.IsVisible)
+            {
+                editServicesView.Hide();
+            }
+        }
+
         public void OpenServiceLog()
         {
+            App.builder.CaptureEvents();
+
             if (!logView.IsVisible)
             {
-                builder.CaptureEvents();
-
                 if (logView.IsLoaded)
                 {
                     logView.Show();
@@ -100,6 +111,14 @@ namespace PeekServiceMonitor.ViewModel
             }
         }
 
+        public bool EventsExist
+        {
+            get
+            {
+               return (App.logViewModel.EventCount > 0) ? true : false;
+            }
+        }
+
         public IServiceRunningViewModel SelectedService
         {
             get { return _selectedService; }
@@ -111,9 +130,15 @@ namespace PeekServiceMonitor.ViewModel
             get { return _services.Services; }
         }
 
+        public bool ServicesStopped
+        {
+            get { return _servicesStopped; }
+            set { SetField(ref _servicesStopped, value); }
+        }
+
         public void ShowWindow()
         {
-            if (App.mainView.IsVisible)
+            if (!App.mainView.IsVisible)
             {
                 App.mainView.Show();
             }
@@ -121,7 +146,7 @@ namespace PeekServiceMonitor.ViewModel
 
         public void HideWindow()
         {
-            if (!App.mainView.IsVisible)
+            if (App.mainView.IsVisible)
             {
                 App.mainView.Hide();
             }

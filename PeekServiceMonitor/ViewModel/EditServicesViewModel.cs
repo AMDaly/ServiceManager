@@ -22,7 +22,6 @@ namespace PeekServiceMonitor.ViewModel
         {
             logger = LogManager.GetLogger(typeof(EditServicesViewModel));
 
-            Debug.WriteLine("Count: " + Properties.Settings.Default.AddedServices.Count);
             if (Properties.Settings.Default.AddedServices != null && Properties.Settings.Default.AddedServices.Count > 0)
             {
                 foreach (var savedSvcName in Properties.Settings.Default.AddedServices)
@@ -33,11 +32,13 @@ namespace PeekServiceMonitor.ViewModel
             }
 
             AddServiceCommand = new RelayCommand<string>(o => AddService(o), p => _addedServices.Count >= 0);
-            RemoveServiceCommand = new RelayCommand<AddedServiceViewModel>(o => RemoveService(o), p => _addedServices.Count >= 0);
+            RemoveServiceCommand = new RelayCommand<AddedServiceViewModel>(o => RemoveService(o), p => _addedServices.Count > 0);
+            HideEditWindowCommand = new RelayCommand(o => HideEditWindow(), p => true);
         }
 
-        public ICommand AddServiceCommand { get; set; }
-        public ICommand RemoveServiceCommand { get; set; }
+        public ICommand AddServiceCommand { get; private set; }
+        public ICommand RemoveServiceCommand { get; private set; }
+        public ICommand HideEditWindowCommand { get; private set; }
 
         public static ObservableCollection<IAddedServiceViewModel> AddedServices
         {
@@ -58,7 +59,6 @@ namespace PeekServiceMonitor.ViewModel
                 return;
             }
 
-            Debug.WriteLine("Inside AddService");
             var svcNames = new List<string>();
 
             svcNames = Properties.Settings.Default.AddedServices.Cast<string>().ToList();
@@ -81,6 +81,8 @@ namespace PeekServiceMonitor.ViewModel
             if (matches.Count() > 0)
             {
                 Properties.Settings.Default.AddedServices.Add(desiredSvcName);
+                Properties.Settings.Default.Save();
+
                 _addedServices.Add(new AddedServiceViewModel(desiredSvcName));
                 App.viewModel.Services.Add(new ServiceRunningViewModel(desiredSvcName));
             }
@@ -91,11 +93,9 @@ namespace PeekServiceMonitor.ViewModel
             logger.Info($"Removing {desiredSvc.Name} from the list of manually added services.");
 
             Properties.Settings.Default.AddedServices.Remove(desiredSvc.Name);
+            Properties.Settings.Default.Save();
+
             _addedServices.Remove(desiredSvc);
-            foreach (var x in App.viewModel.Services)
-            {
-                Debug.WriteLine(x.ServiceName);
-            }
 
             var serviceNameMatch = App.viewModel.Services.Where(p => p.ServiceName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
             var displayNameMatch = App.viewModel.Services.Where(p => p.DisplayName.Equals(desiredSvc.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -108,6 +108,11 @@ namespace PeekServiceMonitor.ViewModel
             {
                 App.viewModel.Services.Remove(displayNameMatch[0]);
             }
+        }
+
+        public void HideEditWindow()
+        {
+            App.viewModel.HideEditServices();
         }
     }
 }

@@ -39,6 +39,11 @@ namespace PeekServiceMonitor.ViewModel
             get;
         }
 
+        bool Selected
+        {
+            get; set;
+        }
+
         void UpdateState();
     }
 }

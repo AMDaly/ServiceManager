@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using PeekServiceMonitor.PropertyChanged;
 using log4net;
+using PeekServiceMonitor.Properties;
 using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.Wpf;
 using System.Windows.Input;
@@ -27,41 +28,23 @@ namespace PeekServiceMonitor.ViewModel
         {
             logger = LogManager.GetLogger(typeof(ServiceRunningViewModel));
 
-            try
+            Service = new ServiceController(svcName);
+            _serviceState = Service.Status;
+
+            StartServiceCommand = new RelayCommand(o => StartService(Service), p => Status == ServiceControllerStatus.Stopped);
+            StopServiceCommand = new RelayCommand(o => StopService(Service), p => Status == ServiceControllerStatus.Running);
+            RestartServiceCommand = new RelayCommand(o => RestartService(Service), p => Status == ServiceControllerStatus.Running);
+
+            id = processExtensions.GetProcessId(Service);
+            startTime = processExtensions.GetStartTime(id);
+
+            if (Service.Status == ServiceControllerStatus.Running)
             {
-                _svcName = svcName;
-                Service = new ServiceController(svcName);
-                _serviceState = Service.Status;
-
-                StartServiceCommand = new RelayCommand(o => StartService(Service),
-                    p => Status == ServiceControllerStatus.Stopped);
-                StopServiceCommand = new RelayCommand(o => StopService(Service),
-                    p => Status == ServiceControllerStatus.Running);
-                RestartServiceCommand = new RelayCommand(o => RestartService(Service),
-                    p => Status == ServiceControllerStatus.Running);
-
-                id = processExtensions.GetProcessId(Service);
-                startTime = processExtensions.GetStartTime(id);
-
-                if (Service.Status == ServiceControllerStatus.Running)
-                {
-                    uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(startTime)));
-                }
-                else
-                {
-                    uptime = "N/A";
-                }
+                uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(startTime)));
             }
-            catch (InvalidOperationException)
+            else
             {
-                // This typically means that the service doesn't exist. Get rid of our bogus ServiceController
-                // as it'll never return anything useful. We can then test for svc == null elsewhere and early out.
-                logger.Warn($"Service {_svcName} does not appear to exist.");
-                Service = null;
-            }
-            catch (Exception ex)
-            {
-                logger.Warn(ex);
+                uptime = "N/A";
             }
         }
         

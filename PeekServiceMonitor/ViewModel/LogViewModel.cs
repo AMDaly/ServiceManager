@@ -26,5 +26,13 @@ namespace PeekServiceMonitor.ViewModel
         {
             _logEntries.Add(entry);
         }
+        
+        public int EventCount
+        {
+            get
+            {
+                return _logEntries.Count;
+            }
+        }
     }
 }

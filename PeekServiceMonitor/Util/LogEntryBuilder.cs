@@ -29,7 +29,7 @@ namespace PeekServiceMonitor.Util
             string query = "*[System/Level=1 or System/Level=2]";
             EventLogQuery eventQuery = new EventLogQuery("Application", PathType.LogName, query);
 
-            LogViewModel logViewModel = new LogViewModel();
+            App.logViewModel = new LogViewModel();
 
             try
             {
@@ -50,7 +50,7 @@ namespace PeekServiceMonitor.Util
                         || Regex.IsMatch(msg, "semex", RegexOptions.IgnoreCase)
                         || Regex.IsMatch(msg, "spinnaker", RegexOptions.IgnoreCase))
                     {
-                        logViewModel.AddEntry(CreateLogEntry(eventdetail, index));
+                        App.logViewModel.AddEntry(CreateLogEntry(eventdetail, index));
                     }
                 }
             }
