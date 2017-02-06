@@ -19,7 +19,7 @@ namespace PeekServiceMonitor.ViewModel
         private string uptime;
         private bool _selected;
 
-        private readonly ProcessExtensions processExtensions = new ProcessExtensions();
+        public readonly ProcessExtensions processExtensions = new ProcessExtensions();
 
         public ServiceRunningViewModel(String svcName)
         {
@@ -97,14 +97,26 @@ namespace PeekServiceMonitor.ViewModel
             var waitUntil = DateTime.UtcNow.AddSeconds(15);
             while (svc.Status != ServiceControllerStatus.Running && svc.Status != ServiceControllerStatus.StartPending && DateTime.UtcNow < waitUntil)
             {
-                svc.Start();
-                svc.Refresh();
-                Status = svc.Status;
-                logger.Info($"Stopping service {svc.DisplayName}. Current status: {Status}");
+                try
+                {
+                    logger.Info($"Starting service {svc.DisplayName}. Current status: {Status}");
+                    svc.Start();
+                    svc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                    Uptime = "";
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    break;
+                }
+                
                 Thread.CurrentThread.Join(100);
             }
 
+            var id = processExtensions.GetProcessId(Service);
+            Started = processExtensions.GetStartTime(id);
             svc.Refresh();
+            Status = svc.Status;
             logger.Info($"{svc.DisplayName} current status: {svc.Status}");
         }
 
@@ -116,19 +128,24 @@ namespace PeekServiceMonitor.ViewModel
             var waitUntil = DateTime.UtcNow.AddSeconds(15);
             while (svc.Status != ServiceControllerStatus.Stopped && DateTime.UtcNow < waitUntil)
             {
-                if (svc.Status == ServiceControllerStatus.Running)
+                try
                 {
-                    logger.Info($"Service {svc.DisplayName} is Running.");
+                    logger.Info($"Stopping service {svc.DisplayName}. Current status: {Status}");
                     svc.Stop();
-                    svc.WaitForStatus(ServiceControllerStatus.Stopped);
+                    svc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                    Uptime = "";
                 }
-
-                svc.Refresh();
-                Status = svc.Status;
-                logger.Info($"Stopping service {svc.DisplayName}. Current status: {Status}");
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
+                    break;
+                }
+                
                 Thread.CurrentThread.Join(100);
             }
 
+            svc.Refresh();
+            Status = svc.Status;
             logger.Info($"{svc.DisplayName} current status: {svc.Status}");
         }
 
@@ -148,9 +165,6 @@ namespace PeekServiceMonitor.ViewModel
 
             if (Service.Status == ServiceControllerStatus.Running)
             {
-                var id = processExtensions.GetProcessId(Service);
-                Started = processExtensions.GetStartTime(id);
-
                 if (Started != "N/A")
                 {
                     Uptime = String.Format("{0:dd\\:hh\\:mm\\:ss}", (DateTime.Now - Convert.ToDateTime(Started)));
