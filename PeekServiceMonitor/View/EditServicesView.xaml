@@ -42,38 +42,55 @@
                     </Button>
                 </Grid>
             </StackPanel>
-            <Grid>
-                <ListView x:Name="AddedServiceListView" ItemsSource="{Binding AddedServices}" Width="Auto" BorderBrush="Transparent">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn x:Name="nameCol" Header=" Service Name" DisplayMemberBinding="{Binding Name}" Width="{Binding ElementName=helperField, Path=ActualWidth}"/>
-                            <GridViewColumn x:Name="removeCol" Width="Auto">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Name="RemoveServiceButton" Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding}" HorizontalContentAlignment="Center" Background="Transparent" BorderBrush="Transparent">
-                                            <StackPanel>
-                                                <Image Source="pack://application:,,,/Resources/remove.png" Height="15" Width="15"/>
-                                            </StackPanel>
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-            <Grid Visibility="Hidden" Width="260">
-                <Grid.ColumnDefinitions>
-                    <!--Width is bound to width of the first GridViewColumn -->
-                    <ColumnDefinition Width="*"/>
-                    <!--Width is set to "Fill"-->
-                    <ColumnDefinition Width="{Binding ElementName=removeCol, Path=ActualWidth}"/>
-                    <!--Correction Width-->
-                    <ColumnDefinition Width="0"/>
-                </Grid.ColumnDefinitions>
-                <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
-                <Grid Grid.Column="0" x:Name="helperField"/>
-            </Grid>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="Crimson" BorderBrush="Crimson" BorderThickness="0.5"/>
+            <StackPanel Height="Auto" Width="Auto">
+                <TextBlock Text="Detected Services" Foreground="Crimson" HorizontalAlignment="Center"/>
+                <Grid>
+                    <ListView  x:Name="DetectedServiceListView" ItemsSource="{Binding DetectedServices}" Width="Auto" BorderBrush="Transparent">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn x:Name="detectedServiceNameCol" Header=" Service Name" DisplayMemberBinding="{Binding DisplayName}" Width="{Binding ElementName=helperField, Path=ActualWidth}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </StackPanel>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="Crimson" BorderBrush="Crimson" BorderThickness="0.5"/>
+            <TextBlock Text="Added Services" Foreground="Crimson" HorizontalAlignment="Center" Background="Transparent"/>
+                <Grid>
+                    <ListView x:Name="AddedServiceListView" ItemsSource="{Binding AddedServices}" Width="Auto" BorderBrush="Transparent">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn x:Name="nameCol" Header=" Service Name" DisplayMemberBinding="{Binding Name}" Width="{Binding ElementName=helperField, Path=ActualWidth}"/>
+                                <GridViewColumn x:Name="removeCol" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Name="RemoveServiceButton" Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:EditServicesView}}}" CommandParameter="{Binding}" HorizontalContentAlignment="Center" Background="Transparent" BorderBrush="Transparent" ToolTip="Remove this service.">
+                                                <StackPanel>
+                                                    <Image Source="pack://application:,,,/Resources/remove.png" Height="15" Width="15"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+                <Grid Visibility="Hidden" Width="260">
+                    <Grid.ColumnDefinitions>
+                        <!--Width is bound to width of the first GridViewColumn -->
+                        <ColumnDefinition Width="*"/>
+                        <!--Width is set to "Fill"-->
+                        <ColumnDefinition Width="{Binding ElementName=removeCol, Path=ActualWidth}"/>
+                        <!--Correction Width-->
+                        <ColumnDefinition Width="0"/>
+                    </Grid.ColumnDefinitions>
+                    <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
+                    <Grid Grid.Column="0" x:Name="helperField"/>
+                </Grid>
+            
+            
             <Grid Height="Auto" x:Name="AddTextbox">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>

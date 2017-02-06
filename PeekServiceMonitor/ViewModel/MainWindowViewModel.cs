@@ -6,6 +6,8 @@ using PeekServiceMonitor.Commands;
 using PeekServiceMonitor.View;
 using log4net;
 using System.Windows;
+using System.Collections.Generic;
+using System.ServiceProcess;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -18,6 +20,7 @@ namespace PeekServiceMonitor.ViewModel
         private LogView logView = new LogView();
         private EditServicesView editServicesView = new EditServicesView();
         private EditServicesViewModel editServicesViewModel = new EditServicesViewModel();
+        private List<ServiceController> _detectedServices;
         private readonly PeekServiceCollection _services;
 
         public MainWindowViewModel(ICommand onInitializeCommand, PeekServiceCollection peekServiceCollection)
@@ -30,6 +33,7 @@ namespace PeekServiceMonitor.ViewModel
             });
 
             _services = peekServiceCollection;
+            _detectedServices = ((ServiceScan)onInitializeCommand).peekSvcList;
             StartAllServicesCommand = new RelayCommand(o => _services.StartAllServices(), p => _services.Services.Count > 0);
             StopAllServicesCommand = new RelayCommand(o => _services.StopAllServices(), p => _services.Services.Count > 0);
             RestartAllServicesCommand = new RelayCommand(o => _services.RestartAllServices(), p => _services.Services.Count > 0);
@@ -117,6 +121,12 @@ namespace PeekServiceMonitor.ViewModel
         public ObservableCollection<IServiceRunningViewModel> Services
         {
             get { return _services.Services; }
+        }
+
+        public List<ServiceController> DetectedServices
+        {
+            get { return _detectedServices; }
+            set { SetField(ref _detectedServices, value); }
         }
 
         public bool ServicesStopped

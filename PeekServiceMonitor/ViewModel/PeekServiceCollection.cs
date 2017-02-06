@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Windows.Data;
 using PeekServiceMonitor.Properties;
 using log4net;
+using System.Collections.Generic;
+using PeekServiceMonitor.Commands;
 
 namespace PeekServiceMonitor.ViewModel
 {
@@ -34,7 +36,7 @@ namespace PeekServiceMonitor.ViewModel
         {
             get { return _services; }
         }
-
+        
         public void StartTimer()
         {
             _timer.Start();

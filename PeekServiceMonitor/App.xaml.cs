@@ -24,9 +24,10 @@ namespace PeekServiceMonitor
         public static MainWindowViewModel viewModel;
         public static MainWindow mainView;
         public static TaskbarIcon tb;
-        List<String> initialSvcList = new List<String>();
+        List<string> initialSvcList = new List<string>();
         public static LogViewModel logViewModel = new LogViewModel();
         public static LogEntryBuilder builder = new LogEntryBuilder();
+        private readonly ServiceScan serviceScan = new ServiceScan();
         private readonly BackgroundWorker worker = new BackgroundWorker();
         private readonly PeekServiceCollection peekServiceCollection = new PeekServiceCollection();
 
@@ -41,7 +42,7 @@ namespace PeekServiceMonitor
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             logger.Info("Application_Startup");
-
+            
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             
             if (Settings.Default.AddedServices != null && Settings.Default.AddedServices.Count > 0)
@@ -52,7 +53,7 @@ namespace PeekServiceMonitor
                 }
             }
 
-            viewModel = new MainWindowViewModel(new ServiceScan(), peekServiceCollection);
+            viewModel = new MainWindowViewModel(serviceScan, peekServiceCollection);
 
             builder.CaptureEvents();
 

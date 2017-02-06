@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace PeekServiceMonitor.Commands
 {
-    class ServiceScan : WpfCommandBase<MainWindowViewModel>
+    public class ServiceScan : WpfCommandBase<MainWindowViewModel>
     {
-        private List<ServiceController> peekSvcList = new List<ServiceController>();
+        public List<ServiceController> peekSvcList = new List<ServiceController>();
         private readonly ILog logger;
 
         public ServiceScan()
@@ -26,7 +26,7 @@ namespace PeekServiceMonitor.Commands
                 .Where(p => Regex.IsMatch(p.ServiceName, "peek", RegexOptions.IgnoreCase)
                             || Regex.IsMatch(p.ServiceName, "spinnaker", RegexOptions.IgnoreCase)
                             || Regex.IsMatch(p.ServiceName, "semex", RegexOptions.IgnoreCase)).ToList();
-
+            
             foreach (var svc in peekSvcList)
             {
                 var svcName = svc.ServiceName;
@@ -42,6 +42,8 @@ namespace PeekServiceMonitor.Commands
                     logger.Warn(ex.InnerException);
                 }
             }
+
+            parameter.DetectedServices = peekSvcList;
         }
     }
 }

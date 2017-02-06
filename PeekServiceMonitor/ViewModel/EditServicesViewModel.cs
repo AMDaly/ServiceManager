@@ -37,6 +37,14 @@ namespace PeekServiceMonitor.ViewModel
         public ICommand RemoveServiceCommand { get; private set; }
         public ICommand HideEditWindowCommand { get; private set; }
 
+        public static List<ServiceController> DetectedServices
+        {
+            get
+            {
+                return App.viewModel.DetectedServices;
+            }
+        }
+
         public static ObservableCollection<IAddedServiceViewModel> AddedServices
         {
             get
