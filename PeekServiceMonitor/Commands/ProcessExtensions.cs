@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PeekServiceMonitor.Commands
 {
-    class ProcessExtensions
+    public class ProcessExtensions
     {
         private readonly ILog logger;
 

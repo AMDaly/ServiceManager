@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Data;
 using PeekServiceMonitor.Properties;
+using log4net;
 
 namespace PeekServiceMonitor.ViewModel
 {
     public class PeekServiceCollection
     {
         private bool urgentIcon = false;
-        private readonly System.Timers.Timer _timer = new System.Timers.Timer();
+        private readonly Timer _timer = new Timer();
         private readonly ObservableCollection<IServiceRunningViewModel> _services = new ObservableCollection<IServiceRunningViewModel>();
         private object _lock = new object();
+        private readonly ILog logger;
 
         public PeekServiceCollection()
         {
+            logger = LogManager.GetLogger(typeof(PeekServiceCollection));
+
             BindingOperations.EnableCollectionSynchronization(_services, _lock);
             
-            _timer.Interval = 200;
+            _timer.Interval = 500;
             _timer.Elapsed += Timer_Elapsed;
         }
 
@@ -80,75 +84,63 @@ namespace PeekServiceMonitor.ViewModel
 
         public void StartAllServices()
         {
+            _timer.Stop();
+
             Task.Factory.StartNew(() =>
             {
                 Parallel.ForEach<IServiceRunningViewModel>(
                     _services,
-                    (o) =>
+                    (svc) =>
                     {
-                        var svc = new ServiceRunningViewModel(o.ServiceName);
-
-                        try
-                        {
-                            svc.StartService(svc.Service);
-                            svc.Service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
-                        }
-                        catch (System.ServiceProcess.TimeoutException)
-                        {
-                            //Activate balloon
-                            Debug.WriteLine($"Failed to start service: {svc.DisplayName}");
-                        }
+                        svc.StartService(svc.Service);
                     });
+
+                Timer_Elapsed(null, null);
+                _timer.Start();
             });
+
+           
         }
 
         public void StopAllServices()
         {
+            _timer.Stop();
+
             Task.Factory.StartNew(() =>
             {
                 Parallel.ForEach<IServiceRunningViewModel>(
                     _services,
-                    (o) =>
+                    (svc) =>
                     {
-                        var svc = new ServiceRunningViewModel(o.ServiceName);
-
-                        try
-                        {
-                            Debug.WriteLine($"Stopping service: {svc.DisplayName}");
-                            svc.StopService(svc.Service);
-                            svc.Service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(15));
-                        }
-                        catch (System.ServiceProcess.TimeoutException)
-                        {
-                            //Activate balloon
-                            Debug.WriteLine($"Failed to stop service: {svc.DisplayName}");
-                        }
+                        svc.StopService(svc.Service);
                     });
+
+                Timer_Elapsed(null, null);
+                _timer.Start();
             });
+
+            
         }
 
         public void RestartAllServices()
         {
+            _timer.Stop();
+
             Task.Factory.StartNew(() =>
             {
                 Parallel.ForEach<IServiceRunningViewModel>(
                     _services,
-                    (o) =>
+                    (svc) =>
                     {
-                        var svc = new ServiceRunningViewModel(o.ServiceName);
-
-                        try
-                        {
-                            svc.RestartService(svc.Service);
-                            svc.Service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
-                        }
-                        catch (System.ServiceProcess.TimeoutException)
-                        {
-                            //Activate balloon
-                            Debug.WriteLine($"Failed to restart service: {svc.DisplayName}");
-                        }
+                        svc.RestartService(svc.Service);
+                        
                     });
+
+                Timer_Elapsed(null, null);
+                _timer.Start();
             });
+
+            
         }
 
         public bool IsAnyServiceStopped()

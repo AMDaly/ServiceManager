@@ -39,6 +39,12 @@ namespace PeekServiceMonitor.ViewModel
             get; set;
         }
 
+        void StartService(ServiceController svc);
+
+        void StopService(ServiceController svc);
+
+        void RestartService(ServiceController svc);
+
         void UpdateState();
     }
 }
